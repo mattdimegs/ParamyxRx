@@ -1,8 +1,3 @@
-/**
- * HomeScreen - Main app screen after authentication
- * @format
- */
-
 import React, { useEffect, useState, useRef } from 'react';
 import {
   StyleSheet,
@@ -16,45 +11,64 @@ import {
   Animated
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
+import { Ionicons } from '@react-native-vector-icons/ionicons';
+import { HomeScreenHelpers } from './helpers';
+import { BloodBag } from 'healthicons-react-native';
 
 const data = [
   {
+    id: 'ketamine',
     generic: 'Ketamine',
     trade: 'Ketalar',
+    system: 'Central Nervous',
     action: 'Blocks N-methyl-D-aspartate (NMDA) receptors in the central nervous system, reducing the perception of pain in the body.',
     dose: {
       adult: {
         iv: {
           amt: '0.5 - 2 mg/kg',
           adt: 'slow bolus, followed by NS flush.',
-          max: null
+          repeat: null,
+          max: null,
+          repeatMax: null
         },
         io: {
           amt: '0.5 - 2 mg/kg',
           adt: 'slow bolus, followed by NS flush.',
-          max: null
+          repeat: null,
+          max: null,
+          repeatMax: null
         },
-        po: null,
         im: null,
         in: null,
-        max: null
+        po: null,
+        sl: null,
+        r: null,
+        ih: null,
+        totalMax: null
       },
       pediatric: {
         iv: {
           amt: '0.5 - 2 mg/kg',
           adt: 'slow bolus, followed by NS flush.',
-          max: null
+          repeat: null,
+          max: null,
+          repeatMax: null
         },
         io: {
           amt: '0.5 - 2 mg/kg',
           adt: 'slow bolus, followed by NS flush.',
-          max: null
+          repeat: null,
+          max: null,
+          repeatMax: null
         },
         po: null,
         im: null,
         in: null,
-        max: null
+        sl: null,
+        r: null,
+        ih: null,
+        totalMax: null
       }
     },
     class: [
@@ -94,8 +108,178 @@ const data = [
     tip: 'Consider using a co-induction agent, such as Midazolam in certain patient populations to help minimize the risk of adverse reactions.'
   },
   {
+    id: 'adenosine',
+    generic: 'Adenosine',
+    trade: 'Adenocard',
+    system: 'Cardiovascular',
+    action: 'Binds to Adenosine receptors in the heart and blood vessels, which activates potassium channels and inhibits calcium influx.',
+    dose: {
+      adult: {
+        iv: {
+          amt: '6 mg',
+          adt: 'rapid bolus, followed by NS flush',
+          repeat: '1 - 2 minutes @ 12 mg',
+          max: null,
+          repeatMax: null
+        },
+        io: {
+          amt: '6 mg',
+          adt: 'rapid bolus, followed by NS flush',
+          repeat: '1 - 2 minutes @ 12 mg',
+          max: null,
+          repeatMax: null
+        },
+        im: null,
+        in: null,
+        po: null,
+        sl: null,
+        r: null,
+        ih: null,
+        totalMax: null
+      },
+      pediatric: {
+        iv: {
+          amt: '0.1 mg/kg',
+          adt: 'rapid bolus, followed by NS flush',
+          repeat: '1 - 2 minutes @ 0.2 mg/kg',
+          initMax: '6 mg',
+          repeatMax: '12 mg'
+        },
+        io: {
+          amt: '0.1 mg/kg',
+          adt: 'rapid bolus, followed by NS flush',
+          repeat: '1 - 2 minutes @ 0.2 mg/kg',
+          initMax: '6 mg',
+          repeatMax: '12 mg'
+        },
+        po: null,
+        im: null,
+        in: null,
+        sl: null,
+        r: null,
+        ih: null,
+        totalMax: null
+      }
+    },
+    class: [
+      'Class 5 Antiarrhythmic'
+    ],
+    indications: [
+      'Supraventricular Tachycardias'
+    ],
+    contraindications: [
+      'Hypersensitivity',
+      'Atrial Fibrilation',
+      'Atrial Flutter',
+      'Ventricular Tachycardia',
+      'Bradycardia',
+      'Drug Induced Tachycardia',
+      'Sick Sinus Syndrome',
+      '2nd or 3rd Degree Heart Block'
+    ],
+    precautions: '',
+    adverse: [
+      'Dizziness',
+      'Dyspnea',
+      'Hypotension',
+      'Bronchospasm',
+      'Palpitations',
+      'Arrythmias',
+      'Transient AV Block'
+    ],
+    onset: {
+      min: null,
+      max: null,
+      unit: 'immediate'
+    },
+    duration: {
+      min: '10',
+      max: '10',
+      unit: 'seconds'
+    },
+    tip: 'Prior to administration click print on the cardiac monitor, then rapidly push Adenosine so that the ECG strip catches its effect.'
+  },
+  {
+    id: 'albuterol',
+    generic: 'Albuterol',
+    trade: 'Proventil',
+    system: 'Respiratory',
+    action: 'It is a selective Beta-2 agonist that stimulates the adrenergic receptors fo the sympathomimetic nervous system. Leading to bronchodilation and improved airflow.',
+    dose: {
+      adult: {
+        iv: null,
+        io: null,
+        im: null,
+        in: null,
+        po: null,
+        sl: null,
+        r: null,
+        ih: {
+          amt: '2.5 - 5 mg',
+          adt: 'Nebulized diluted in 2.5 mL of NS',
+          repeat: '20 - 30 minutes',
+          max: '3 doses/hour',
+          repeatMax: null
+        },
+        totalMax: null
+      },
+      pediatric: {
+        iv: null,
+        io: null,
+        po: null,
+        im: null,
+        in: null,
+        sl: null,
+        r: null,
+        ih: {
+          amt: '1.25 - 2.5 mg',
+          adt: 'Nebulized diluted in 2.5 mL of NS',
+          repeat: '20 - 30 minutes',
+          max: '3 doses/hour',
+          repeatMax: null
+        },
+        totalMax: null
+      }
+    },
+    class: [
+      'Bronchodilator',
+      'Sympathomimetic'
+    ],
+    indications: [
+      'Asthma or COPD Exacerbation',
+      'Acute Bronchospasm'
+    ],
+    contraindications: [
+      'Hypersensitivity',
+      'Hyperthyroidism'
+    ],
+    precautions: '',
+    adverse: [
+      'Dizziness',
+      'Anxiety',
+      'Tremors',
+      'Hypertension',
+      'Tachycardia',
+      'Palpitations',
+      'Arrythmias'
+    ],
+    onset: {
+      min: '5',
+      max: '15',
+      unit: 'minutes'
+    },
+    duration: {
+      min: '3',
+      max: '4',
+      unit: 'hours'
+    },
+    tip: 'Administer supplemental oxygen simultaneously to patients with significant respiratory distress or hypoxia, as this can enhance the effectiveness of Albuterol.'
+  },
+  {
+    id: 'fentanyl',
     generic: 'Fentanyl',
     trade: 'Sublimaze',
+    system: 'Central Nervous',
     action: 'Binds to mu-opioid receptors in the central nervous system, leading to an icreased potassium efflux and decreased calcium influx.',
     dose: {
       adult: {
@@ -103,36 +287,46 @@ const data = [
           amt: '0.5 - 2 mcg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: '5 - 10 minutes',
-          max: '100 mcg'
+          max: '100 mcg',
+          repeatMax: null
         },
         io: {
           amt: '0.5 - 2 mcg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: '5 - 10 minutes',
-          max: '100 mcg'
+          max: '100 mcg',
+          repeatMax: null
         },
         po: null,
         im: null,
         in: null,
-        max: '300 mcg'
+        sl: null,
+        r: null,
+        ih: null,
+        totalMax: '300 mcg'
       },
       pediatric: {
         iv: {
           amt: '0.5 - 1 mcg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: '5 - 10 minutes',
-          max: '100 mcg'
+          max: '100 mcg',
+          repeatMax: null
         },
         io: {
           amt: '0.5 - 1 mcg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: '5 - 10 minutes',
-          max: '100 mcg'
+          max: '100 mcg',
+          repeatMax: null
         },
         po: null,
         im: null,
         in: null,
-        max: '3 mcg/kg'
+        sl: null,
+        r: null,
+        ih: null,
+        totalMax: '3 mcg/kg'
       }
     },
     class: [
@@ -178,13 +372,28 @@ const filters = [
     id: 'route',
     name: 'Administration Route',
     options: [
-      {value: 'Intravenous'},
-      {value: 'Intraosseous'},
-      {value: 'Intramuscular'},
-      {value: 'Sublingual'},
-      {value: 'Rectal'},
-      {value: 'Inhalation'},
-      {value: 'Oral'}
+      'Intravenous',
+      'Intraosseous',
+      'Intramuscular',
+      'Intranasal',
+      'Sublingual',
+      'Rectal',
+      'Inhalation',
+      'Oral'
+    ],
+    multiSelect: true
+  },
+  {
+    id: 'system',
+    name: 'System',
+    options: [
+      'Cardiovascular',
+      'Central Nervous',
+      'Respiratory',
+      'Gastrointestinal',
+      'Endocrine',
+      'Urinary',
+      'Musculoskeletal'
     ],
     multiSelect: true
   },
@@ -249,7 +458,7 @@ export default function HomeScreen() {
   }, [search]);
 
   useEffect(() => {
-    console.log('filter: ', filter)
+    console.log('filter: ', filter);
   }, [filter]);
 
   useEffect(() => {
@@ -293,10 +502,17 @@ export default function HomeScreen() {
         <View style={styles.content}>
           {completeData?.map((i, idx) => {
             return (
-              <View style={styles.card} key={`${i?.generic}_${idx}`}>
-                <Text style={styles.cardTitle}>{i?.generic}</Text>
-                <Text style={styles.cardText}>{i?.action}</Text>
-              </View>
+              <TouchableOpacity style={styles.card} key={`${i?.generic}_${idx}`}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <View style={{ flex: 1, marginRight: 12 }}>
+                    <Text style={styles.cardTitle}>{i?.generic}</Text>
+                    {HomeScreenHelpers.getRoutes(i)}
+                  </View>
+                  {HomeScreenHelpers.getSystem(i)}
+                  <View style={{ width: 12 }} />
+                  <Ionicons name="chevron-forward-outline" />
+                </View>
+              </TouchableOpacity>
             )
           })}
         </View>
@@ -434,10 +650,22 @@ const createStyles = (colors) => StyleSheet.create({
     color: colors.text,
     marginBottom: 8,
   },
+  cardSectionTitle: {
+    fontSize: 17,
+    fontWeight: '500',
+    color: colors.text,
+    marginTop: 4,
+    marginBottom: 4
+  },
   cardText: {
     fontSize: 15,
     color: colors.secondaryText,
     lineHeight: 22,
+  },
+  sectionDivider: {
+    height: 1,
+    backgroundColor: colors.separator,
+    marginVertical: 12,
   },
   modalOverlay: {
     flex: 1,
