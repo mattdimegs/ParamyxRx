@@ -14,7 +14,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { HomeScreenHelpers } from './helpers';
-import { BloodBag } from 'healthicons-react-native';
 
 const data = [
   {
@@ -453,7 +452,11 @@ export default function HomeScreen() {
         return 0;
       }));
     } else {
-      setCompleteData(originalSortedData);
+      if (filteredData) {
+        setCompleteData(filteredData);
+      } else {
+        setCompleteData(originalSortedData);
+      }
     }
   }, [search]);
 

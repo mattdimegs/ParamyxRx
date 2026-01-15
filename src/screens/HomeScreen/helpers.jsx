@@ -19,6 +19,16 @@ const medicationRoutes = [
     key: 'iv',
     label: 'IV',
     check: (drug) => drug?.dose?.adult?.iv !== null || drug?.dose?.pediatric?.iv !== null,
+    category: (drug) => {
+      if (drug?.dose?.adult?.iv !== null && drug?.dose?.pediatric?.iv !== null) {
+        return 'both';
+      } else if (drug?.dose?.adult?.iv !== null) {
+        return 'adult';
+      } else if (drug?.dose?.pediatric?.iv !== null) {
+        return 'pediatric';
+      }
+      return null;
+    },
     bgColor: '#E3F2FD',
     borderColor: '#2196F3',
     textColor: '#1565C0'
@@ -27,6 +37,16 @@ const medicationRoutes = [
     key: 'io',
     label: 'IO',
     check: (drug) => drug?.dose?.adult?.io !== null || drug?.dose?.pediatric?.io !== null,
+    category: (drug) => {
+      if (drug?.dose?.adult?.io !== null && drug?.dose?.pediatric?.io !== null) {
+        return 'both';
+      } else if (drug?.dose?.adult?.io !== null) {
+        return 'adult';
+      } else if (drug?.dose?.pediatric?.io !== null) {
+        return 'pediatric';
+      }
+      return null;
+    },
     bgColor: '#F3E5F5',
     borderColor: '#9C27B0',
     textColor: '#6A1B9A'
@@ -35,6 +55,16 @@ const medicationRoutes = [
     key: 'im',
     label: 'IM',
     check: (drug) => drug?.dose?.adult?.im !== null || drug?.dose?.pediatric?.im !== null,
+    category: (drug) => {
+      if (drug?.dose?.adult?.im !== null && drug?.dose?.pediatric?.im !== null) {
+        return 'both';
+      } else if (drug?.dose?.adult?.im !== null) {
+        return 'adult';
+      } else if (drug?.dose?.pediatric?.im !== null) {
+        return 'pediatric';
+      }
+      return null;
+    },
     bgColor: '#E8F5E9',
     borderColor: '#4CAF50',
     textColor: '#2E7D32'
@@ -43,6 +73,16 @@ const medicationRoutes = [
     key: 'in',
     label: 'IN',
     check: (drug) => drug?.dose?.adult?.in !== null || drug?.dose?.pediatric?.in !== null,
+    category: (drug) => {
+      if (drug?.dose?.adult?.in !== null && drug?.dose?.pediatric?.in !== null) {
+        return 'both';
+      } else if (drug?.dose?.adult?.in !== null) {
+        return 'adult';
+      } else if (drug?.dose?.pediatric?.in !== null) {
+        return 'pediatric';
+      }
+      return null;
+    },
     bgColor: '#FFF3E0',
     borderColor: '#FF9800',
     textColor: '#E65100'
@@ -51,6 +91,16 @@ const medicationRoutes = [
     key: 'po',
     label: 'PO',
     check: (drug) => drug?.dose?.adult?.po !== null || drug?.dose?.pediatric?.po !== null,
+    category: (drug) => {
+      if (drug?.dose?.adult?.po !== null && drug?.dose?.pediatric?.po !== null) {
+        return 'both';
+      } else if (drug?.dose?.adult?.po !== null) {
+        return 'adult';
+      } else if (drug?.dose?.pediatric?.po !== null) {
+        return 'pediatric';
+      }
+      return null;
+    },
     bgColor: '#FCE4EC',
     borderColor: '#E91E63',
     textColor: '#AD1457'
@@ -59,6 +109,16 @@ const medicationRoutes = [
     key: 'sl',
     label: 'SL',
     check: (drug) => drug?.dose?.adult?.sl !== null || drug?.dose?.pediatric?.sl !== null,
+    category: (drug) => {
+      if (drug?.dose?.adult?.sl !== null && drug?.dose?.pediatric?.sl !== null) {
+        return 'both';
+      } else if (drug?.dose?.adult?.sl !== null) {
+        return 'adult';
+      } else if (drug?.dose?.pediatric?.sl !== null) {
+        return 'pediatric';
+      }
+      return null;
+    },
     bgColor: '#F1F8E9',
     borderColor: '#8BC34A',
     textColor: '#558B2F'
@@ -67,6 +127,16 @@ const medicationRoutes = [
     key: 'rectal',
     label: 'Rectal',
     check: (drug) => drug?.dose?.adult?.r !== null || drug?.dose?.pediatric?.r !== null,
+    category: (drug) => {
+      if (drug?.dose?.adult?.rectal !== null && drug?.dose?.pediatric?.rectal !== null) {
+        return 'both';
+      } else if (drug?.dose?.adult?.rectal !== null) {
+        return 'adult';
+      } else if (drug?.dose?.pediatric?.rectal !== null) {
+        return 'pediatric';
+      }
+      return null;
+    },
     bgColor: '#FFF9C4',
     borderColor: '#FDD835',
     textColor: '#F57F17'
@@ -75,6 +145,16 @@ const medicationRoutes = [
     key: 'inhalation',
     label: 'Inhalation',
     check: (drug) => drug?.dose?.adult?.ih !== null || drug?.dose?.pediatric?.ih !== null,
+    category: (drug) => {
+      if (drug?.dose?.adult?.inhalation !== null && drug?.dose?.pediatric?.inhalation !== null) {
+        return 'both';
+      } else if (drug?.dose?.adult?.inhalation !== null) {
+        return 'adult';
+      } else if (drug?.dose?.pediatric?.inhalation !== null) {
+        return 'pediatric';
+      }
+      return null;
+    },
     bgColor: '#E0F2F1',
     borderColor: '#009688',
     textColor: '#00695C'
@@ -131,25 +211,44 @@ const Badge = ({ label, bgColor, borderColor, textColor }) => (
 );
 
 export const HomeScreenHelpers = {
-    getRoutes: (drug) => {
-        const activeRoutes = medicationRoutes.filter(route => route.check(drug));
-        
-        if (activeRoutes.length === 0) return null;
-        
-        return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
-                {activeRoutes.map(route => (
-                    <Badge
-                        key={route.key}
-                        label={route.label}
-                        bgColor={route.bgColor}
-                        borderColor={route.borderColor}
-                        textColor={route.textColor}
-                    />
-                ))}
-            </View>
-        );
-    },
+  getRoutes: (drug) => {
+    const activeRoutes = medicationRoutes.filter(route => route.check(drug));
+    
+    if (activeRoutes.length === 0) return null;
+    
+    return (
+      <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
+        {activeRoutes.map((route) => {
+          const cat = route.category(drug);
+          let label;
+
+          switch (cat) {
+            case 'both':
+              label = `${route.label}`
+              break;
+            case 'adult':
+              label = `A: ${route.label}`
+              break;
+            case 'pediatric':
+              label = `P: ${route.label}`
+              break;
+            default: 
+              label = ''
+          }
+
+          return (
+            <Badge
+              key={route.key}
+              label={label}
+              bgColor={route.bgColor}
+              borderColor={route.borderColor}
+              textColor={route.textColor}
+            />
+          )
+        })}
+      </View>
+    );
+  },
     
     getSystem: (drug) => {
         if (!drug?.system) return null;
