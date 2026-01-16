@@ -28,14 +28,14 @@ const data = [
           amt: '0.5 - 2 mg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: null,
-          max: null,
+          initMax: null,
           repeatMax: null
         },
         io: {
           amt: '0.5 - 2 mg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: null,
-          max: null,
+          initMax: null,
           repeatMax: null
         },
         im: null,
@@ -51,14 +51,14 @@ const data = [
           amt: '0.5 - 2 mg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: null,
-          max: null,
+          initMax: null,
           repeatMax: null
         },
         io: {
           amt: '0.5 - 2 mg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: null,
-          max: null,
+          initMax: null,
           repeatMax: null
         },
         po: null,
@@ -118,14 +118,14 @@ const data = [
           amt: '6 mg',
           adt: 'rapid bolus, followed by NS flush',
           repeat: '1 - 2 minutes @ 12 mg',
-          max: null,
+          initMax: null,
           repeatMax: null
         },
         io: {
           amt: '6 mg',
           adt: 'rapid bolus, followed by NS flush',
           repeat: '1 - 2 minutes @ 12 mg',
-          max: null,
+          initMax: null,
           repeatMax: null
         },
         im: null,
@@ -217,7 +217,7 @@ const data = [
           amt: '2.5 - 5 mg',
           adt: 'Nebulized diluted in 2.5 mL of NS',
           repeat: '20 - 30 minutes',
-          max: '3 doses/hour',
+          initMax: '3 doses/hour',
           repeatMax: null
         },
         totalMax: null
@@ -234,7 +234,7 @@ const data = [
           amt: '1.25 - 2.5 mg',
           adt: 'Nebulized diluted in 2.5 mL of NS',
           repeat: '20 - 30 minutes',
-          max: '3 doses/hour',
+          initMax: '3 doses/hour',
           repeatMax: null
         },
         totalMax: null
@@ -286,14 +286,14 @@ const data = [
           amt: '0.5 - 2 mcg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: '5 - 10 minutes',
-          max: '100 mcg',
+          initMax: '100 mcg',
           repeatMax: null
         },
         io: {
           amt: '0.5 - 2 mcg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: '5 - 10 minutes',
-          max: '100 mcg',
+          initMax: '100 mcg',
           repeatMax: null
         },
         po: null,
@@ -309,14 +309,14 @@ const data = [
           amt: '0.5 - 1 mcg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: '5 - 10 minutes',
-          max: '100 mcg',
+          initMax: '100 mcg',
           repeatMax: null
         },
         io: {
           amt: '0.5 - 1 mcg/kg',
           adt: 'slow bolus, followed by NS flush.',
           repeat: '5 - 10 minutes',
-          max: '100 mcg',
+          initMax: '100 mcg',
           repeatMax: null
         },
         po: null,
