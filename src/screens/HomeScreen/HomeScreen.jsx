@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
+  ActivityIndicator,
   StyleSheet,
   Text,
   View,
@@ -14,358 +15,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { HomeScreenHelpers } from './helpers';
+import { useHomeScreen } from '../../hooks/useHomeScreen';
 
-const data = [
-  {
-    id: 'ketamine',
-    generic: 'Ketamine',
-    trade: 'Ketalar',
-    system: 'Central Nervous',
-    action: 'Blocks N-methyl-D-aspartate (NMDA) receptors in the central nervous system, reducing the perception of pain in the body.',
-    dose: {
-      adult: {
-        iv: {
-          amt: '0.5 - 2 mg/kg',
-          adt: 'slow bolus, followed by NS flush.',
-          repeat: null,
-          initMax: null,
-          repeatMax: null
-        },
-        io: {
-          amt: '0.5 - 2 mg/kg',
-          adt: 'slow bolus, followed by NS flush.',
-          repeat: null,
-          initMax: null,
-          repeatMax: null
-        },
-        im: null,
-        in: null,
-        po: null,
-        sl: null,
-        r: null,
-        ih: null,
-        totalMax: null
-      },
-      pediatric: {
-        iv: {
-          amt: '0.5 - 2 mg/kg',
-          adt: 'slow bolus, followed by NS flush.',
-          repeat: null,
-          initMax: null,
-          repeatMax: null
-        },
-        io: {
-          amt: '0.5 - 2 mg/kg',
-          adt: 'slow bolus, followed by NS flush.',
-          repeat: null,
-          initMax: null,
-          repeatMax: null
-        },
-        po: null,
-        im: null,
-        in: null,
-        sl: null,
-        r: null,
-        ih: null,
-        totalMax: null
-      }
-    },
-    class: [
-      'Analgesic',
-      'Sedative'
-    ],
-    indications: [
-      'Moderate to Severe Pain',
-      'Procedural Sedation'
-    ],
-    contraindications: [
-      'Hypersensitivity',
-      'Stroke',
-      'Severe Hypertension',
-      'Intercranial Pressure'
-    ],
-    precautions: '',
-    adverse: [
-      'Hallucinations',
-      'Agitation',
-      'Nausea & Vomiting',
-      'Tachycardia',
-      'Hypertension',
-      'Arrythmias',
-      'Respiratory Depression'
-    ],
-    onset: {
-      min: '30',
-      max: '60',
-      unit: 'seconds'
-    },
-    duration: {
-      min: '20',
-      max: '60',
-      unit: 'minutes'
-    },
-    tip: 'Consider using a co-induction agent, such as Midazolam in certain patient populations to help minimize the risk of adverse reactions.'
-  },
-  {
-    id: 'adenosine',
-    generic: 'Adenosine',
-    trade: 'Adenocard',
-    system: 'Cardiovascular',
-    action: 'Binds to Adenosine receptors in the heart and blood vessels, which activates potassium channels and inhibits calcium influx.',
-    dose: {
-      adult: {
-        iv: {
-          amt: '6 mg',
-          adt: 'rapid bolus, followed by NS flush',
-          repeat: '1 - 2 minutes @ 12 mg',
-          initMax: null,
-          repeatMax: null
-        },
-        io: {
-          amt: '6 mg',
-          adt: 'rapid bolus, followed by NS flush',
-          repeat: '1 - 2 minutes @ 12 mg',
-          initMax: null,
-          repeatMax: null
-        },
-        im: null,
-        in: null,
-        po: null,
-        sl: null,
-        r: null,
-        ih: null,
-        totalMax: null
-      },
-      pediatric: {
-        iv: {
-          amt: '0.1 mg/kg',
-          adt: 'rapid bolus, followed by NS flush',
-          repeat: '1 - 2 minutes @ 0.2 mg/kg',
-          initMax: '6 mg',
-          repeatMax: '12 mg'
-        },
-        io: {
-          amt: '0.1 mg/kg',
-          adt: 'rapid bolus, followed by NS flush',
-          repeat: '1 - 2 minutes @ 0.2 mg/kg',
-          initMax: '6 mg',
-          repeatMax: '12 mg'
-        },
-        po: null,
-        im: null,
-        in: null,
-        sl: null,
-        r: null,
-        ih: null,
-        totalMax: null
-      }
-    },
-    class: [
-      'Class 5 Antiarrhythmic'
-    ],
-    indications: [
-      'Supraventricular Tachycardias'
-    ],
-    contraindications: [
-      'Hypersensitivity',
-      'Atrial Fibrilation',
-      'Atrial Flutter',
-      'Ventricular Tachycardia',
-      'Bradycardia',
-      'Drug Induced Tachycardia',
-      'Sick Sinus Syndrome',
-      '2nd or 3rd Degree Heart Block'
-    ],
-    precautions: '',
-    adverse: [
-      'Dizziness',
-      'Dyspnea',
-      'Hypotension',
-      'Bronchospasm',
-      'Palpitations',
-      'Arrythmias',
-      'Transient AV Block'
-    ],
-    onset: {
-      min: null,
-      max: null,
-      unit: 'immediate'
-    },
-    duration: {
-      min: '10',
-      max: '10',
-      unit: 'seconds'
-    },
-    tip: 'Prior to administration click print on the cardiac monitor, then rapidly push Adenosine so that the ECG strip catches its effect.'
-  },
-  {
-    id: 'albuterol',
-    generic: 'Albuterol',
-    trade: 'Proventil',
-    system: 'Respiratory',
-    action: 'It is a selective Beta-2 agonist that stimulates the adrenergic receptors fo the sympathomimetic nervous system. Leading to bronchodilation and improved airflow.',
-    dose: {
-      adult: {
-        iv: null,
-        io: null,
-        im: null,
-        in: null,
-        po: null,
-        sl: null,
-        r: null,
-        ih: {
-          amt: '2.5 - 5 mg',
-          adt: 'Nebulized diluted in 2.5 mL of NS',
-          repeat: '20 - 30 minutes',
-          initMax: '3 doses/hour',
-          repeatMax: null
-        },
-        totalMax: null
-      },
-      pediatric: {
-        iv: null,
-        io: null,
-        po: null,
-        im: null,
-        in: null,
-        sl: null,
-        r: null,
-        ih: {
-          amt: '1.25 - 2.5 mg',
-          adt: 'Nebulized diluted in 2.5 mL of NS',
-          repeat: '20 - 30 minutes',
-          initMax: '3 doses/hour',
-          repeatMax: null
-        },
-        totalMax: null
-      }
-    },
-    class: [
-      'Bronchodilator',
-      'Sympathomimetic'
-    ],
-    indications: [
-      'Asthma or COPD Exacerbation',
-      'Acute Bronchospasm'
-    ],
-    contraindications: [
-      'Hypersensitivity',
-      'Hyperthyroidism'
-    ],
-    precautions: '',
-    adverse: [
-      'Dizziness',
-      'Anxiety',
-      'Tremors',
-      'Hypertension',
-      'Tachycardia',
-      'Palpitations',
-      'Arrythmias'
-    ],
-    onset: {
-      min: '5',
-      max: '15',
-      unit: 'minutes'
-    },
-    duration: {
-      min: '3',
-      max: '4',
-      unit: 'hours'
-    },
-    tip: 'Administer supplemental oxygen simultaneously to patients with significant respiratory distress or hypoxia, as this can enhance the effectiveness of Albuterol.'
-  },
-  {
-    id: 'fentanyl',
-    generic: 'Fentanyl',
-    trade: 'Sublimaze',
-    system: 'Central Nervous',
-    action: 'Binds to mu-opioid receptors in the central nervous system, leading to an icreased potassium efflux and decreased calcium influx.',
-    dose: {
-      adult: {
-        iv: {
-          amt: '0.5 - 2 mcg/kg',
-          adt: 'slow bolus, followed by NS flush.',
-          repeat: '5 - 10 minutes',
-          initMax: '100 mcg',
-          repeatMax: null
-        },
-        io: {
-          amt: '0.5 - 2 mcg/kg',
-          adt: 'slow bolus, followed by NS flush.',
-          repeat: '5 - 10 minutes',
-          initMax: '100 mcg',
-          repeatMax: null
-        },
-        po: null,
-        im: null,
-        in: null,
-        sl: null,
-        r: null,
-        ih: null,
-        totalMax: '300 mcg'
-      },
-      pediatric: {
-        iv: {
-          amt: '0.5 - 1 mcg/kg',
-          adt: 'slow bolus, followed by NS flush.',
-          repeat: '5 - 10 minutes',
-          initMax: '100 mcg',
-          repeatMax: null
-        },
-        io: {
-          amt: '0.5 - 1 mcg/kg',
-          adt: 'slow bolus, followed by NS flush.',
-          repeat: '5 - 10 minutes',
-          initMax: '100 mcg',
-          repeatMax: null
-        },
-        po: null,
-        im: null,
-        in: null,
-        sl: null,
-        r: null,
-        ih: null,
-        totalMax: '3 mcg/kg'
-      }
-    },
-    class: [
-      'Opioid Analgesic'
-    ],
-    indications: [
-      'Moderate to Severe Pain',
-      'Procedural Sedation'
-    ],
-    contraindications: [
-      'Hypersensitivity',
-      'CNS & Respiratory Depression',
-      'Hypotension',
-      'Arrythmias',
-      'Myasthenia Gravis'
-    ],
-    precautions: '',
-    adverse: [
-      'Drowsiness',
-      'Delirium',
-      'Nausea & Vomiting',
-      'Hypotension',
-      'Bradycardia',
-      'Respiratory Depression',
-      'Chest Wall Rigidity',
-      'Overdose'
-    ],
-    onset: {
-      min: '1',
-      max: '2',
-      unit: 'minutes'
-    },
-    duration: {
-      min: '30',
-      max: '60',
-      unit: 'minutes'
-    },
-    tip: 'Use appropriate PPE to avoid exposure when handling Fentanyl, as it is quite easy to overdose on it.'
-  }
-];
 const filters = [
   {
     id: 'route',
@@ -413,6 +64,12 @@ const filters = [
 ];
 
 export default function HomeScreen() {
+  const data = useHomeScreen();
+  const {
+    medications,
+    loading,
+    error
+  } = data;
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const styles = createStyles(colors);
@@ -421,17 +78,31 @@ export default function HomeScreen() {
   const [filter, setFilter] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const slideAnim = useRef(new Animated.Value(1000)).current;
-  const originalSortedData = data?.sort((a, b) => {
-      if (a.generic < b.generic) {
-        return -1;
-      }
-      if (a.generic > b.generic) {
-        return 1;
-      }
-      return 0;
-    });
-  const [filteredData, setFilteredData] = useState(originalSortedData);
+  const [originalSortedData, setOriginalSortedData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [completeData, setCompleteData] = useState(filteredData);
+
+  useEffect(() => {
+    if (medications && !loading && !error) {
+      setOriginalSortedData(medications?.sort((a, b) => {
+        if (a.generic < b.generic) {
+          return -1;
+        }
+        if (a.generic > b.generic) {
+          return 1;
+        }
+        return 0;
+      }));
+    }
+  }, [medications]);
+
+  useEffect(() => {
+    setFilteredData(originalSortedData);
+  }, [originalSortedData]);
+
+  useEffect(() => {
+    setCompleteData(filteredData);
+  }, [filteredData]);
 
   useEffect(() => {
     if (search) {
@@ -501,25 +172,35 @@ export default function HomeScreen() {
           <Text style={styles.resetText}>Reset All Filters & Search</Text>
         </TouchableOpacity>
       </View>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.content}>
-          {completeData?.map((i, idx) => {
-            return (
-              <TouchableOpacity style={styles.card} key={`${i?.generic}_${idx}`}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <View style={{ flex: 1, marginRight: 12 }}>
-                    <Text style={styles.cardTitle}>{i?.generic}</Text>
-                    {HomeScreenHelpers.getRoutes(i)}
-                  </View>
-                  {HomeScreenHelpers.getSystem(i)}
-                  <View style={{ width: 12 }} />
-                  <Ionicons name="chevron-forward-outline" />
-                </View>
-              </TouchableOpacity>
-            )
-          })}
+      {loading || (completeData?.length === 0 && search === '') ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
-      </ScrollView>
+      ) : completeData?.length === 0 ? (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.noResultsText}>No medications found</Text>
+        </View>
+      ) : (
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.content}>
+            {completeData?.map((i, idx) => {
+              return (
+                <TouchableOpacity style={styles.card} key={`${i?.generic}_${idx}`}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <View style={{ flex: 1, marginRight: 12 }}>
+                      <Text style={styles.cardTitle}>{i?.generic}</Text>
+                      {HomeScreenHelpers.getRoutes(i)}
+                    </View>
+                    {HomeScreenHelpers.getSystem(i)}
+                    <View style={{ width: 12 }} />
+                    <Ionicons name="chevron-forward-outline" />
+                  </View>
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+        </ScrollView>
+      )}
       <Modal
         visible={filterOpen}
         animationType="fade"
@@ -669,6 +350,17 @@ const createStyles = (colors) => StyleSheet.create({
     height: 1,
     backgroundColor: colors.separator,
     marginVertical: 12,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 100,
+  },
+  noResultsText: {
+    fontSize: 16,
+    color: colors.secondaryText,
+    textAlign: 'center',
   },
   modalOverlay: {
     flex: 1,

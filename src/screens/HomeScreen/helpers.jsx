@@ -18,13 +18,13 @@ const medicationRoutes = [
   {
     key: 'iv',
     label: 'IV',
-    check: (drug) => drug?.dose?.adult?.iv !== null || drug?.dose?.pediatric?.iv !== null,
+    check: (drug) => drug?.adult?.hasIV || drug?.pediatric?.hasIV,
     category: (drug) => {
-      if (drug?.dose?.adult?.iv !== null && drug?.dose?.pediatric?.iv !== null) {
+      if (drug?.adult?.hasIV && drug?.pediatric?.hasIV) {
         return 'both';
-      } else if (drug?.dose?.adult?.iv !== null) {
+      } else if (drug?.adult?.hasIV) {
         return 'adult';
-      } else if (drug?.dose?.pediatric?.iv !== null) {
+      } else if (drug?.pediatric?.hasIV) {
         return 'pediatric';
       }
       return null;
@@ -36,13 +36,13 @@ const medicationRoutes = [
   {
     key: 'io',
     label: 'IO',
-    check: (drug) => drug?.dose?.adult?.io !== null || drug?.dose?.pediatric?.io !== null,
+    check: (drug) => drug?.adult?.hasIO || drug?.pediatric?.hasIO,
     category: (drug) => {
-      if (drug?.dose?.adult?.io !== null && drug?.dose?.pediatric?.io !== null) {
+      if (drug?.adult?.hasIO && drug?.pediatric?.hasIO) {
         return 'both';
-      } else if (drug?.dose?.adult?.io !== null) {
+      } else if (drug?.adult?.hasIO) {
         return 'adult';
-      } else if (drug?.dose?.pediatric?.io !== null) {
+      } else if (drug?.pediatric?.hasIO) {
         return 'pediatric';
       }
       return null;
@@ -54,13 +54,13 @@ const medicationRoutes = [
   {
     key: 'im',
     label: 'IM',
-    check: (drug) => drug?.dose?.adult?.im !== null || drug?.dose?.pediatric?.im !== null,
+    check: (drug) => drug?.adult?.hasIM || drug?.pediatric?.hasIM,
     category: (drug) => {
-      if (drug?.dose?.adult?.im !== null && drug?.dose?.pediatric?.im !== null) {
+      if (drug?.adult?.hasIM && drug?.pediatric?.hasIM) {
         return 'both';
-      } else if (drug?.dose?.adult?.im !== null) {
+      } else if (drug?.adult?.hasIM) {
         return 'adult';
-      } else if (drug?.dose?.pediatric?.im !== null) {
+      } else if (drug?.pediatric?.hasIM) {
         return 'pediatric';
       }
       return null;
@@ -72,13 +72,13 @@ const medicationRoutes = [
   {
     key: 'in',
     label: 'IN',
-    check: (drug) => drug?.dose?.adult?.in !== null || drug?.dose?.pediatric?.in !== null,
+    check: (drug) => drug?.adult?.hasIN || drug?.pediatric?.hasIN,
     category: (drug) => {
-      if (drug?.dose?.adult?.in !== null && drug?.dose?.pediatric?.in !== null) {
+      if (drug?.adult?.hasIN && drug?.pediatric?.hasIN) {
         return 'both';
-      } else if (drug?.dose?.adult?.in !== null) {
+      } else if (drug?.adult?.hasIN) {
         return 'adult';
-      } else if (drug?.dose?.pediatric?.in !== null) {
+      } else if (drug?.pediatric?.hasIN) {
         return 'pediatric';
       }
       return null;
@@ -90,13 +90,13 @@ const medicationRoutes = [
   {
     key: 'po',
     label: 'PO',
-    check: (drug) => drug?.dose?.adult?.po !== null || drug?.dose?.pediatric?.po !== null,
+    check: (drug) => drug?.adult?.hasPO || drug?.pediatric?.hasPO,
     category: (drug) => {
-      if (drug?.dose?.adult?.po !== null && drug?.dose?.pediatric?.po !== null) {
+      if (drug?.adult?.hasPO && drug?.pediatric?.hasPO) {
         return 'both';
-      } else if (drug?.dose?.adult?.po !== null) {
+      } else if (drug?.adult?.hasPO) {
         return 'adult';
-      } else if (drug?.dose?.pediatric?.po !== null) {
+      } else if (drug?.pediatric?.hasPO) {
         return 'pediatric';
       }
       return null;
@@ -108,13 +108,13 @@ const medicationRoutes = [
   {
     key: 'sl',
     label: 'SL',
-    check: (drug) => drug?.dose?.adult?.sl !== null || drug?.dose?.pediatric?.sl !== null,
+    check: (drug) => drug?.adult?.hasSL || drug?.pediatric?.hasSL,
     category: (drug) => {
-      if (drug?.dose?.adult?.sl !== null && drug?.dose?.pediatric?.sl !== null) {
+      if (drug?.adult?.hasSL && drug?.pediatric?.hasSL) {
         return 'both';
-      } else if (drug?.dose?.adult?.sl !== null) {
+      } else if (drug?.adult?.hasSL) {
         return 'adult';
-      } else if (drug?.dose?.pediatric?.sl !== null) {
+      } else if (drug?.pediatric?.hasSL) {
         return 'pediatric';
       }
       return null;
@@ -124,15 +124,15 @@ const medicationRoutes = [
     textColor: '#558B2F'
   },
   {
-    key: 'rectal',
-    label: 'Rectal',
-    check: (drug) => drug?.dose?.adult?.r !== null || drug?.dose?.pediatric?.r !== null,
+    key: 'pr',
+    label: 'PR',
+    check: (drug) => drug?.adult?.hasPR || drug?.pediatric?.hasPR,
     category: (drug) => {
-      if (drug?.dose?.adult?.rectal !== null && drug?.dose?.pediatric?.rectal !== null) {
+      if (drug?.adult?.hasPR && drug?.pediatric?.hasPR) {
         return 'both';
-      } else if (drug?.dose?.adult?.rectal !== null) {
+      } else if (drug?.adult?.hasPR) {
         return 'adult';
-      } else if (drug?.dose?.pediatric?.rectal !== null) {
+      } else if (drug?.pediatric?.hasPR) {
         return 'pediatric';
       }
       return null;
@@ -142,15 +142,15 @@ const medicationRoutes = [
     textColor: '#F57F17'
   },
   {
-    key: 'inhalation',
-    label: 'Inhalation',
-    check: (drug) => drug?.dose?.adult?.ih !== null || drug?.dose?.pediatric?.ih !== null,
+    key: 'neb',
+    label: 'NEB',
+    check: (drug) => drug?.adult?.hasNEB || drug?.pediatric?.hasNEB,
     category: (drug) => {
-      if (drug?.dose?.adult?.inhalation !== null && drug?.dose?.pediatric?.inhalation !== null) {
+      if (drug?.adult?.hasNEB && drug?.pediatric?.hasNEB) {
         return 'both';
-      } else if (drug?.dose?.adult?.inhalation !== null) {
+      } else if (drug?.adult?.hasNEB) {
         return 'adult';
-      } else if (drug?.dose?.pediatric?.inhalation !== null) {
+      } else if (drug?.pediatric?.hasNEB) {
         return 'pediatric';
       }
       return null;
@@ -158,6 +158,42 @@ const medicationRoutes = [
     bgColor: '#E0F2F1',
     borderColor: '#009688',
     textColor: '#00695C'
+  },
+  {
+    key: 'et',
+    label: 'ET',
+    check: (drug) => drug?.adult?.hasET || drug?.pediatric?.hasET,
+    category: (drug) => {
+      if (drug?.adult?.hasET && drug?.pediatric?.hasET) {
+        return 'both';
+      } else if (drug?.adult?.hasET) {
+        return 'adult';
+      } else if (drug?.pediatric?.hasET) {
+        return 'pediatric';
+      }
+      return null;
+    },
+    bgColor: '#EDE7F6',
+    borderColor: '#673AB7',
+    textColor: '#4527A0'
+  },
+  {
+    key: 'sga',
+    label: 'SGA',
+    check: (drug) => drug?.adult?.hasSGA || drug?.pediatric?.hasSGA,
+    category: (drug) => {
+      if (drug?.adult?.hasSGA && drug?.pediatric?.hasSGA) {
+        return 'both';
+      } else if (drug?.adult?.hasSGA) {
+        return 'adult';
+      } else if (drug?.pediatric?.hasSGA) {
+        return 'pediatric';
+      }
+      return null;
+    },
+    bgColor: '#FFEBEE',
+    borderColor: '#F44336',
+    textColor: '#C62828'
   }
 ];
 
