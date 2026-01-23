@@ -1,0 +1,1 @@
+export { useMedScreen } from './useMedScreen';

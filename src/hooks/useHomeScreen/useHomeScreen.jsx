@@ -10,7 +10,7 @@ export const useHomeScreen = () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         const response = await fetch(`${process.env.API_URL}/medication/base`, {
           headers: {
             'Authorization': `Bearer ${process.env.API_KEY}`,
@@ -39,5 +39,5 @@ export const useHomeScreen = () => {
     medications,
     loading,
     error
-  }
-}
+  };
+};

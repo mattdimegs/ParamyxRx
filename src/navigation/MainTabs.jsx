@@ -5,9 +5,11 @@
 
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@react-native-vector-icons/ionicons';
-import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import HomeStack from './HomeStack';
 import { useTheme } from '../context/ThemeContext';
+import {
+  Medicines,
+} from 'healthicons-react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,13 +35,14 @@ export default function MainTabs() {
           fontWeight: '500',
           marginTop: 4,
         },
-      }}>
+      }
+    }>
       <Tab.Screen 
-        name="Home" 
-        component={HomeScreen}
+        name="Medications" 
+        component={HomeStack}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+            <Medicines width={size} height={size} color={color} />
           ),
         }}
       />

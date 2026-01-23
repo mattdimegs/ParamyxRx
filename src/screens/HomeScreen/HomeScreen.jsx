@@ -11,6 +11,7 @@ import {
   Pressable,
   Animated
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
@@ -64,6 +65,7 @@ const filters = [
 ];
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
   const data = useHomeScreen();
   const {
     medications,
@@ -155,7 +157,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top }]}>
-        <Text style={styles.headerTitle}>Home</Text>
+        <Text style={styles.headerTitle}>Medications</Text>
       </View>
       <View style={styles.actionsContainer}>
         <TextInput style={styles.searchBar} onChangeText={setSearch} value={search} placeholder='Search' />
@@ -185,7 +187,9 @@ export default function HomeScreen() {
           <View style={styles.content}>
             {completeData?.map((i, idx) => {
               return (
-                <TouchableOpacity style={styles.card} key={`${i?.generic}_${idx}`}>
+                <TouchableOpacity style={styles.card} key={`${i?.generic}_${idx}`} onPress={() => { 
+                  return navigation.navigate('MedScreen', { drugId: i?.id });
+                }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ flex: 1, marginRight: 12 }}>
                       <Text style={styles.cardTitle}>{i?.generic}</Text>
