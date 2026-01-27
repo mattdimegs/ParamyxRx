@@ -174,13 +174,18 @@ export default function HomeScreen() {
           <Text style={styles.resetText}>Reset All Filters & Search</Text>
         </TouchableOpacity>
       </View>
-      {loading || (completeData?.length === 0 && search === '') ? (
+      {loading || (completeData?.length === 0 && search === '') && !error ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
-      ) : completeData?.length === 0 ? (
+      ) : completeData?.length === 0 && !loading && !error ? (
         <View style={styles.loadingContainer}>
           <Text style={styles.noResultsText}>No medications found</Text>
+        </View>
+      ) : !loading && error ? (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.noResultsText}>There has been an error.</Text>
+          <Text style={styles.noResultsText}>Please restart the application.</Text>
         </View>
       ) : (
         <ScrollView style={styles.scrollView}>
