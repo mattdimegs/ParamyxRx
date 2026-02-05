@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { useMedScreen } from '../../hooks/useMedScreen';
+import { ContentCard, ItemCard, TimeCard } from './helpers';
 
 export default function MedScreen({ route }) {
   const { drugId } = route.params;
@@ -67,81 +68,41 @@ export default function MedScreen({ route }) {
           </View>
           {/* Onset/Duration */}
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-            <View style={[styles.onsetDurationCard, { width: '49%' }]}>
-                {medication?.onset?.unit === 'immediate' ? (
-                  <Text style={styles.onsetDurationText}>Immediate Onset</Text>
-                ) : (
-                  <Text style={styles.onsetDurationText}>
-                    {`Onset: ${medication?.onset?.min} - ${medication?.onset?.max} ${medication?.onset?.unit}`}
-                  </Text>
-                )}
-            </View>
-            <View style={[styles.onsetDurationCard, { width: '49%' }]}>
-              {medication?.duration?.unit === 'immediate' ? (
-                <Text style={styles.onsetDurationText}>Immediate Onset</Text>
-              ) : (
-                <Text style={styles.onsetDurationText}>
-                  {`Duration: ${medication?.duration?.min} - ${medication?.duration?.max} ${medication?.duration?.unit}`}
-                </Text>
-              )}
-            </View>
+            <TimeCard content={medication?.onset} type='Onset' />
+            <TimeCard content={medication?.duration} type='Duration' />
           </View>
-          {/* Indications */}  
-          <View style={styles.indicationCard}>
-            <View style={styles.indicationCardHeader}>
-              <View style={styles.indicationCardHeaderColorFlag} />
-              <View style={styles.indicationCardHeaderContent}>
-                <Ionicons name="checkmark-circle" size={20} color="rgb(101, 157, 85)" />
-                <Text style={styles.indicationCardHeaderText}>Indications</Text>
-              </View>
-            </View>
-            <View style={{ borderWidth: '.6', borderColor: 'rgb(232 233 232)' }} />
-            <View style={styles.indicationCardContent}>
-              {medication?.indications?.map((i) => {
-                return (
-                  <View style={styles.indicationCardHeaderContent}>
-                    <Ionicons name="checkmark-circle" size={20} color="rgb(101, 157, 85)" />
-                    <Text style={styles.indicationContentText}>{i}</Text>
-                  </View>
-                )
-              })}
-            </View>
-          </View>
+          {/* Indications */}
+          <ItemCard
+            cardColor='rgb(101, 157, 85)'
+            cardIcon='checkmark-circle'
+            cardTitle='Indications'
+            contentMap={medication?.indications}
+            headerColor='rgb(230, 244, 227)'
+          />
           {/* Contraindications */}  
-          <View style={styles.contraCard}>
-            <View style={styles.contraCardHeader}>
-              <View style={styles.contraCardHeaderColorFlag} />
-              <View style={styles.contraCardHeaderContent}>
-                <Ionicons name="close-circle" size={20} color="rgb(203 88 61)" />
-                <Text style={styles.contraCardHeaderText}>Contraindications</Text>
-              </View>
-            </View>
-            <View style={{ borderWidth: '.6', borderColor: 'rgb(232 233 232)' }} />
-            <View style={styles.contraCardContent}>
-              {medication?.contraindications?.map((i) => {
-                return (
-                  <View style={styles.contraCardHeaderContent}>
-                    <Ionicons name="close-circle" size={20} color="rgb(203 88 61)" />
-                    <Text style={styles.contraContentText}>{i}</Text>
-                  </View>
-                )
-              })}
-            </View>
-          </View>
-          {/* Precautionary Statement */}  
-          <View style={styles.warningCard}>
-            <View style={styles.warningCardHeader}>
-              <View style={styles.warningCardHeaderColorFlag} />
-              <View style={styles.warningCardHeaderContent}>
-                <Ionicons name="warning" size={20} color="rgb(226 161 59)" />
-                <Text style={styles.warningCardHeaderText}>Precautionary Statement</Text>
-              </View>
-            </View>
-            <View style={{ borderWidth: '.6', borderColor: 'rgb(232 233 232)' }} />
-            <View style={styles.warningCardContent}>
-              <Text>{medication?.precautions}</Text>
-            </View>
-          </View>
+          <ItemCard
+            cardColor='rgb(203 88 61)'
+            cardIcon='close-circle'
+            cardTitle='Contraindications'
+            contentMap={medication?.contraindications}
+            headerColor='rgb(251 240 233)'
+          />
+          {/* Precautionary Statement */}
+          <ContentCard
+            cardColor='rgb(226 161 59)'
+            cardIcon='warning'
+            cardTitle='Precautionary Statement'
+            content={medication?.precautions}
+            headerColor='rgb(250 244 232)'
+          />
+          {/* Field Tip */}
+          <ContentCard
+            cardColor='rgb(56 124 167)'
+            cardIcon='information-circle-outline'
+            cardTitle='Field Tips'
+            content={medication?.tip}
+            headerColor='rgb(229 241 246)'
+          />
         {/* Content */}  
         </ScrollView>
       )}
@@ -203,162 +164,5 @@ const createStyles = (colors) => StyleSheet.create({
   badgeText: {
     fontSize: 12,
     fontWeight: '400'
-  },
-  onsetDurationCard: {
-    backgroundColor: colors.card,
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 8,
-    shadowColor: colors.text,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-    alignItems: 'center',
-  },
-  onsetDurationText: {
-    fontSize: 12,
-    color: colors.text
-  },
-  indicationCard: {
-    backgroundColor: colors.card,
-    borderRadius: 8,
-    marginBottom: 8,
-    shadowColor: colors.text,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  indicationCardHeader: {
-    flexDirection: 'row',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    backgroundColor: 'rgb(230, 244, 227)'
-  },
-  indicationCardHeaderColorFlag: {
-    borderTopLeftRadius: 8,
-    paddingHorizontal: 6,
-    backgroundColor: 'rgb(101, 157, 85)'
-  },
-  indicationCardHeaderContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    gap: 4
-  },
-  indicationCardHeaderText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  indicationCardContent: {
-    paddingTop: 5,
-    paddingBottom: 5,
-    paddingHorizontal: 13
-  },
-  indicationContentText: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: colors.text,
-  },
-  contraCard: {
-    backgroundColor: colors.card,
-    borderRadius: 8,
-    marginBottom: 8,
-    shadowColor: colors.text,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  contraCardHeader: {
-    flexDirection: 'row',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    backgroundColor: 'rgb(251 240 233)'
-  },
-  contraCardHeaderColorFlag: {
-    borderTopLeftRadius: 8,
-    paddingHorizontal: 6,
-    backgroundColor: 'rgb(203 88 61)'
-  },
-  contraCardHeaderContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    gap: 4
-  },
-  contraCardHeaderText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  contraCardContent: {
-    paddingTop: 5,
-    paddingBottom: 5,
-    paddingHorizontal: 13
-  },
-  contraContentText: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: colors.text,
-  },
-  warningCard: {
-    backgroundColor: colors.card,
-    borderRadius: 8,
-    marginBottom: 8,
-    shadowColor: colors.text,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  warningCardHeader: {
-    flexDirection: 'row',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    backgroundColor: 'rgb(250 244 232)'
-  },
-  warningCardHeaderColorFlag: {
-    borderTopLeftRadius: 8,
-    paddingHorizontal: 6,
-    backgroundColor: 'rgb(226 161 59)'
-  },
-  warningCardHeaderContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    gap: 4
-  },
-  warningCardHeaderText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  warningCardContent: {
-    paddingTop: 5,
-    paddingBottom: 10,
-    paddingHorizontal: 20
-  },
-  warningContentText: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: colors.text,
   }
 });
