@@ -18,7 +18,7 @@ import {
 } from 'healthicons-react-native/outline';
 import { systems } from '../globalHelpers';
 
-export const SystemIcon = ({ medicationSystem }) => {
+export const getSystemIcon = (medicationSystem) => {
   if (!medicationSystem) return null;
   
   const system = systems.find(sys => sys.value === medicationSystem);
@@ -36,6 +36,77 @@ export const SystemIcon = ({ medicationSystem }) => {
   if (!IconComponent) return null;
   
   return <IconComponent height={20} width={20} color='grey' />;
+}
+
+export const TabCard = ({
+  cardKey,
+  tabs,
+  content
+}) => {
+  const [selectedTab, setSelectedTab] = useState(tabs[0]?.id)
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+  return (
+    <View style={styles.universalCard} key={cardKey}>
+      <View 
+        key={cardKey}
+        style={[
+          styles.cardHeader,
+          { 
+            backgroundColor: 'rgb(244 246 242)'
+          }
+        ]}
+      >
+        <View
+          style={{
+            paddingHorizontal: 8,
+            paddingVertical: 6,
+            flex: 1
+          }}
+        >
+          <View 
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignContent: 'center'
+            }}
+          >
+            {tabs?.map((i, idx) => {
+              const isFirst = idx === 0;
+              const isLast = idx === tabs.length - 1;
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  style={{
+                    alignItems: 'center',
+                    borderWidth: 1,
+                    borderColor: '#A0A0A0',
+                    width: 125,
+                    paddingVertical: 1,
+                    borderTopLeftRadius: isFirst ? 8 : 0,
+                    borderBottomLeftRadius: isFirst ? 8 : 0,
+                    borderTopRightRadius: isLast ? 8 : 0,
+                    borderBottomRightRadius: isLast ? 8 : 0,
+                    borderLeftWidth: isFirst ? 1 : 0,
+                    backgroundColor: selectedTab === i?.id ? 'rgb(177 182 182)' : ''
+                  }}
+                  onPress={() => { return setSelectedTab(i?.id) }}
+                >
+                  <Text style={{ 
+                    fontWeight: '600',
+                    color: colors.text
+                  }}>{i?.label}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+      </View>
+      <CardHeaderBorder />
+      <View style={styles.contentCard}>
+      </View>
+    </View>    
+  );
 }
 
 export const TimeCard = ({

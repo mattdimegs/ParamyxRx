@@ -12,7 +12,13 @@ import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { useMedScreen } from '../../hooks/useMedScreen';
-import { ContentCard, ItemCard, TimeCard, SystemIcon } from './helpers';
+import {
+  ContentCard,
+  getSystemIcon,
+  ItemCard,
+  TabCard,
+  TimeCard
+} from './helpers';
 
 export default function MedScreen({ route }) {
   const { drugId } = route.params;
@@ -61,7 +67,7 @@ export default function MedScreen({ route }) {
                   );
                 })}
                 <View style={styles.badge}>
-                  <SystemIcon medicationSystem={medication?.system} />
+                  {getSystemIcon(medication?.system)}
                   <Text style={styles.badgeText}>{`${medication?.system} System`}</Text>
                 </View>
               </View>
@@ -72,18 +78,24 @@ export default function MedScreen({ route }) {
             <TimeCard content={medication?.onset} type='Onset' />
             <TimeCard content={medication?.duration} type='Duration' />
           </View>
-          {/* Indications */}
-          <ItemCard
-            cardKey='indications'
+          <TabCard cardKey='tabs'
+            tabs={[
+              { id: 'adult', label: 'Adult' },
+              { id: 'pediatric', label: 'Pediatric' }
+            ]}
+            content={{
+              adult: medication?.adult,
+              pediatric: medication?.pediatric
+            }}
+          />
+          <ItemCard cardKey='indications'
             cardColor='rgb(101, 157, 85)'
             cardIcon='checkmark-circle'
             cardTitle='Indications'
             contentMap={medication?.indications}
             headerColor='rgb(230, 244, 227)'
           />
-          {/* Contraindications */}  
-          <ItemCard
-            cardKey='contraindications'
+          <ItemCard cardKey='contraindications'
             cardColor='rgb(203 88 61)'
             cardIcon='close-circle'
             cardTitle='Contraindications'
@@ -91,18 +103,14 @@ export default function MedScreen({ route }) {
             headerColor='rgb(251 240 233)'
             defaultOpen
           />
-          {/* Precautionary Statement */}
-          <ContentCard
-            cardKey='precautions'
+          <ContentCard cardKey='precautions'
             cardColor='rgb(226 161 59)'
             cardIcon='warning'
             cardTitle='Precautionary Statement'
             content={medication?.precautions}
             headerColor='rgb(250 244 232)'
           />
-          {/* Field Tip */}
-          <ContentCard
-            cardKey='tips'
+          <ContentCard cardKey='tips'
             cardColor='rgb(56 124 167)'
             cardIcon='information-circle-outline'
             cardTitle='Field Tips'
