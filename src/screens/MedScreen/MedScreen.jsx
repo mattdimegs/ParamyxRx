@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { useMedScreen } from '../../hooks/useMedScreen';
-import { ContentCard, ItemCard, TimeCard } from './helpers';
+import { ContentCard, ItemCard, TimeCard, SystemIcon } from './helpers';
 
 export default function MedScreen({ route }) {
   const { drugId } = route.params;
@@ -61,6 +61,7 @@ export default function MedScreen({ route }) {
                   );
                 })}
                 <View style={styles.badge}>
+                  <SystemIcon medicationSystem={medication?.system} />
                   <Text style={styles.badgeText}>{`${medication?.system} System`}</Text>
                 </View>
               </View>
@@ -73,6 +74,7 @@ export default function MedScreen({ route }) {
           </View>
           {/* Indications */}
           <ItemCard
+            cardKey='indications'
             cardColor='rgb(101, 157, 85)'
             cardIcon='checkmark-circle'
             cardTitle='Indications'
@@ -81,14 +83,17 @@ export default function MedScreen({ route }) {
           />
           {/* Contraindications */}  
           <ItemCard
+            cardKey='contraindications'
             cardColor='rgb(203 88 61)'
             cardIcon='close-circle'
             cardTitle='Contraindications'
             contentMap={medication?.contraindications}
             headerColor='rgb(251 240 233)'
+            defaultOpen
           />
           {/* Precautionary Statement */}
           <ContentCard
+            cardKey='precautions'
             cardColor='rgb(226 161 59)'
             cardIcon='warning'
             cardTitle='Precautionary Statement'
@@ -97,6 +102,7 @@ export default function MedScreen({ route }) {
           />
           {/* Field Tip */}
           <ContentCard
+            cardKey='tips'
             cardColor='rgb(56 124 167)'
             cardIcon='information-circle-outline'
             cardTitle='Field Tips'
@@ -153,7 +159,11 @@ const createStyles = (colors) => StyleSheet.create({
     marginBottom: 8,
   },
   badge: {
+    height: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 8,
+    gap: 4,
     paddingVertical: 4,
     borderRadius: 4,
     backgroundColor: '#D5D5D5',

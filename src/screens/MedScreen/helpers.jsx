@@ -7,6 +7,36 @@ import {
 } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
+import {
+  HeartOrgan,
+  ChildCognition,
+  Lungs,
+  Stomach,
+  Thyroid,
+  Kidneys,
+  Skeleton
+} from 'healthicons-react-native/outline';
+import { systems } from '../globalHelpers';
+
+export const SystemIcon = ({ medicationSystem }) => {
+  if (!medicationSystem) return null;
+  
+  const system = systems.find(sys => sys.value === medicationSystem);
+  if (!system) return null;
+  
+  const IconComponent = {
+      HeartOrgan,
+      ChildCognition,
+      Lungs,
+      Stomach,
+      Thyroid,
+      Kidneys,
+      Skeleton
+  }[system.icon];
+  if (!IconComponent) return null;
+  
+  return <IconComponent height={20} width={20} color='grey' />;
+}
 
 export const TimeCard = ({
   content,
@@ -28,6 +58,7 @@ export const TimeCard = ({
 }
 
 export const CardHeader = ({
+  cardKey,
   cardColor,
   cardIcon,
   cardTitle,
@@ -39,6 +70,7 @@ export const CardHeader = ({
 }) => {
   return (
     <TouchableOpacity 
+      key={cardKey}
       style={[
         styles.cardHeader,
         { 
@@ -70,18 +102,21 @@ export const CardHeaderBorder = () => {
 };
 
 export const ContentCard = ({
+  cardKey,
   cardColor,
   cardIcon,
   cardTitle,
   content,
   headerColor,
+  defaultOpen = false
 }) => {
-  const [cardOpen, setCardOpen] = useState(true);
+  const [cardOpen, setCardOpen] = useState(defaultOpen);
   const { colors } = useTheme();
   const styles = createStyles(colors);
   return (
-    <View style={styles.universalCard}>
-      <CardHeader 
+    <View style={styles.universalCard} key={cardKey}>
+      <CardHeader
+        cardKey={cardKey}
         cardColor={cardColor}
         cardIcon={cardIcon}
         cardTitle={cardTitle}
@@ -104,18 +139,21 @@ export const ContentCard = ({
 };
 
 export const ItemCard = ({
+  cardKey,
   cardColor,
   cardIcon,
   cardTitle,
   contentMap,
   headerColor,
+  defaultOpen = false
 }) => {
-  const [cardOpen, setCardOpen] = useState(true);
+  const [cardOpen, setCardOpen] = useState(defaultOpen);
   const { colors } = useTheme();
   const styles = createStyles(colors);
   return (
-    <View style={styles.universalCard}>
-      <CardHeader 
+    <View style={styles.universalCard} key={cardKey}>
+      <CardHeader
+        cardKey={cardKey}
         cardColor={cardColor}
         cardIcon={cardIcon}
         cardTitle={cardTitle}
@@ -129,9 +167,9 @@ export const ItemCard = ({
         <View>
           <CardHeaderBorder />
           <View style={styles.itemCardContent}>
-            {contentMap?.map((i) => {
+            {contentMap?.map((i, idx) => {
               return (
-                <View style={styles.itemCardHeaderContent}>
+                <View style={styles.itemCardHeaderContent} key={idx}>
                   <Ionicons name={cardIcon} size={20} color={cardColor}/>
                   <Text style={styles.itemContentText}>{i}</Text>
                 </View>
