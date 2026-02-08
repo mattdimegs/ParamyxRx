@@ -88,6 +88,13 @@ export default function MedScreen({ route }) {
               pediatric: medication?.pediatric
             }}
           />
+          <ContentCard cardKey='action'
+            cardColor='rgb(56 124 167)'
+            cardIcon='information-circle-outline'
+            cardTitle='Medication Action'
+            content={medication?.action}
+            headerColor='rgb(229 241 246)'
+          />
           <ItemCard cardKey='indications'
             cardColor='rgb(101, 157, 85)'
             cardIcon='checkmark-circle'
@@ -103,6 +110,14 @@ export default function MedScreen({ route }) {
             headerColor='rgb(251 240 233)'
             defaultOpen
           />
+          <ItemCard cardKey='adverse'
+            cardColor='rgb(107 70 193)'
+            cardIcon='nuclear'
+            cardTitle='Adverse Effects'
+            contentMap={medication?.adverse}
+            headerColor='rgb(243 240 255)'
+            bulletIcon='caret-forward-outline'
+          />
           <ContentCard cardKey='precautions'
             cardColor='rgb(226 161 59)'
             cardIcon='warning'
@@ -110,13 +125,15 @@ export default function MedScreen({ route }) {
             content={medication?.precautions}
             headerColor='rgb(250 244 232)'
           />
-          <ContentCard cardKey='tips'
-            cardColor='rgb(56 124 167)'
-            cardIcon='information-circle-outline'
-            cardTitle='Field Tips'
-            content={medication?.tip}
-            headerColor='rgb(229 241 246)'
-          />
+          {medication?.tip ? (
+            <ContentCard cardKey='tips'
+              cardColor='rgb(56 124 167)'
+              cardIcon='information-circle-outline'
+              cardTitle='Field Tips'
+              content={medication?.tip}
+              headerColor='rgb(229 241 246)'
+            />
+          ) : null}
         {/* Content */}  
         </ScrollView>
       )}

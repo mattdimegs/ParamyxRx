@@ -146,11 +146,21 @@ export const CardHeader = ({
         styles.cardHeader,
         { 
           backgroundColor: headerColor
-        }
+        },
+        !cardOpen ? { 
+          borderBottomLeftRadius: 8,
+          borderBottomRightRadius: 8
+        } : {}
       ]}
       onPress={() => { return setCardOpen(!cardOpen) }}
       >
-      <View style={[styles.cardHeaderColorFlag, { backgroundColor: cardColor }]} />
+      <View style={[
+        styles.cardHeaderColorFlag,
+        {
+          backgroundColor: cardColor
+        },
+        !cardOpen ? { borderBottomLeftRadius: 8 } : {}
+      ]} />
       <View style={styles.cardHeaderContent}>
         <View style={styles.cardHeaderTitleContainer}>
           <Ionicons name={cardIcon} size={20} color={cardColor} />
@@ -216,7 +226,8 @@ export const ItemCard = ({
   cardTitle,
   contentMap,
   headerColor,
-  defaultOpen = false
+  defaultOpen = false,
+  bulletIcon = null
 }) => {
   const [cardOpen, setCardOpen] = useState(defaultOpen);
   const { colors } = useTheme();
@@ -241,7 +252,7 @@ export const ItemCard = ({
             {contentMap?.map((i, idx) => {
               return (
                 <View style={styles.itemCardHeaderContent} key={idx}>
-                  <Ionicons name={cardIcon} size={20} color={cardColor}/>
+                  <Ionicons name={bulletIcon || cardIcon} size={20} color={bulletIcon ? 'grey' : cardColor}/>
                   <Text style={styles.itemContentText}>{i}</Text>
                 </View>
               );
