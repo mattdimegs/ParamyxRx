@@ -13,12 +13,12 @@ import {
   Kidneys,
   Skeleton
 } from 'healthicons-react-native';
-import { systems } from '../globalHelpers';
+import { medicationRouteBadgeColors, medicationRouteLabels, systems } from '../globalHelpers';
 
 const medicationRoutes = [
   {
     key: 'iv',
-    label: 'IV',
+    label: medicationRouteLabels.iv,
     check: (drug) => drug?.adult?.hasIV || drug?.pediatric?.hasIV,
     category: (drug) => {
       if (drug?.adult?.hasIV && drug?.pediatric?.hasIV) {
@@ -30,13 +30,11 @@ const medicationRoutes = [
       }
       return null;
     },
-    bgColor: '#E3F2FD',
-    borderColor: '#2196F3',
-    textColor: '#1565C0'
+    ...medicationRouteBadgeColors.iv
   },
   {
     key: 'io',
-    label: 'IO',
+    label: medicationRouteLabels.io,
     check: (drug) => drug?.adult?.hasIO || drug?.pediatric?.hasIO,
     category: (drug) => {
       if (drug?.adult?.hasIO && drug?.pediatric?.hasIO) {
@@ -48,13 +46,11 @@ const medicationRoutes = [
       }
       return null;
     },
-    bgColor: '#F3E5F5',
-    borderColor: '#9C27B0',
-    textColor: '#6A1B9A'
+    ...medicationRouteBadgeColors.io
   },
   {
     key: 'im',
-    label: 'IM',
+    label: medicationRouteLabels.im,
     check: (drug) => drug?.adult?.hasIM || drug?.pediatric?.hasIM,
     category: (drug) => {
       if (drug?.adult?.hasIM && drug?.pediatric?.hasIM) {
@@ -66,13 +62,11 @@ const medicationRoutes = [
       }
       return null;
     },
-    bgColor: '#E8F5E9',
-    borderColor: '#4CAF50',
-    textColor: '#2E7D32'
+    ...medicationRouteBadgeColors.im
   },
   {
     key: 'in',
-    label: 'IN',
+    label: medicationRouteLabels.in,
     check: (drug) => drug?.adult?.hasIN || drug?.pediatric?.hasIN,
     category: (drug) => {
       if (drug?.adult?.hasIN && drug?.pediatric?.hasIN) {
@@ -84,13 +78,11 @@ const medicationRoutes = [
       }
       return null;
     },
-    bgColor: '#FFF3E0',
-    borderColor: '#FF9800',
-    textColor: '#E65100'
+    ...medicationRouteBadgeColors.in
   },
   {
     key: 'po',
-    label: 'PO',
+    label: medicationRouteLabels.po,
     check: (drug) => drug?.adult?.hasPO || drug?.pediatric?.hasPO,
     category: (drug) => {
       if (drug?.adult?.hasPO && drug?.pediatric?.hasPO) {
@@ -102,13 +94,11 @@ const medicationRoutes = [
       }
       return null;
     },
-    bgColor: '#FCE4EC',
-    borderColor: '#E91E63',
-    textColor: '#AD1457'
+    ...medicationRouteBadgeColors.po
   },
   {
     key: 'sl',
-    label: 'SL',
+    label: medicationRouteLabels.sl,
     check: (drug) => drug?.adult?.hasSL || drug?.pediatric?.hasSL,
     category: (drug) => {
       if (drug?.adult?.hasSL && drug?.pediatric?.hasSL) {
@@ -120,13 +110,11 @@ const medicationRoutes = [
       }
       return null;
     },
-    bgColor: '#F1F8E9',
-    borderColor: '#8BC34A',
-    textColor: '#558B2F'
+    ...medicationRouteBadgeColors.sl
   },
   {
     key: 'pr',
-    label: 'PR',
+    label: medicationRouteLabels.pr,
     check: (drug) => drug?.adult?.hasPR || drug?.pediatric?.hasPR,
     category: (drug) => {
       if (drug?.adult?.hasPR && drug?.pediatric?.hasPR) {
@@ -138,13 +126,11 @@ const medicationRoutes = [
       }
       return null;
     },
-    bgColor: '#FFF9C4',
-    borderColor: '#FDD835',
-    textColor: '#F57F17'
+    ...medicationRouteBadgeColors.pr
   },
   {
     key: 'neb',
-    label: 'NEB',
+    label: medicationRouteLabels.neb,
     check: (drug) => drug?.adult?.hasNEB || drug?.pediatric?.hasNEB,
     category: (drug) => {
       if (drug?.adult?.hasNEB && drug?.pediatric?.hasNEB) {
@@ -156,13 +142,11 @@ const medicationRoutes = [
       }
       return null;
     },
-    bgColor: '#E0F2F1',
-    borderColor: '#009688',
-    textColor: '#00695C'
+    ...medicationRouteBadgeColors.neb
   },
   {
     key: 'et',
-    label: 'ET',
+    label: medicationRouteLabels.et,
     check: (drug) => drug?.adult?.hasET || drug?.pediatric?.hasET,
     category: (drug) => {
       if (drug?.adult?.hasET && drug?.pediatric?.hasET) {
@@ -174,13 +158,11 @@ const medicationRoutes = [
       }
       return null;
     },
-    bgColor: '#EDE7F6',
-    borderColor: '#673AB7',
-    textColor: '#4527A0'
+    ...medicationRouteBadgeColors.et
   },
   {
     key: 'sga',
-    label: 'SGA',
+    label: medicationRouteLabels.sga,
     check: (drug) => drug?.adult?.hasSGA || drug?.pediatric?.hasSGA,
     category: (drug) => {
       if (drug?.adult?.hasSGA && drug?.pediatric?.hasSGA) {
@@ -192,9 +174,7 @@ const medicationRoutes = [
       }
       return null;
     },
-    bgColor: '#FFEBEE',
-    borderColor: '#F44336',
-    textColor: '#C62828'
+    ...medicationRouteBadgeColors.sga
   }
 ];
 

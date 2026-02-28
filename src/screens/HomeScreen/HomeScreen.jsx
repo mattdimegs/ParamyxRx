@@ -64,6 +64,14 @@ const filters = [
   }
 ];
 
+const regions = [
+  'NMETC',
+  'NREMT',
+  'Connecticut',
+  'Massachusetts',
+  'Wisconsin'
+];
+
 export default function HomeScreen() {
   const navigation = useNavigation();
   const data = useHomeScreen();
@@ -79,6 +87,8 @@ export default function HomeScreen() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [region, setRegion] = useState('NREMT');
+  const [regionOpen, setRegionOpen] = useState(false);
   const slideAnim = useRef(new Animated.Value(1000)).current;
   const [originalSortedData, setOriginalSortedData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -154,14 +164,34 @@ export default function HomeScreen() {
     }
   }, [filterOpen]);
 
+  useEffect(() => {
+    if (regionOpen) {
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        useNativeDriver: true,
+        tension: 65,
+        friction: 11,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: 1000,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [regionOpen]);
+
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top }]}>
         <Text style={styles.headerTitle}>Medications</Text>
+        <TouchableOpacity style={styles.headerButton} onPress={() => setRegionOpen(true)}>
+          <Text>Region</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.actionsContainer}>
         <TextInput style={styles.searchBar} onChangeText={setSearch} value={search} placeholder='Search' />
-        <TouchableOpacity style={styles.button} onPress={() => setFilterOpen(true)}>
+        <TouchableOpacity style={styles.filterButton} onPress={() => setFilterOpen(true)}>
           <Text>Filters</Text>
         </TouchableOpacity>
       </View>
@@ -253,6 +283,69 @@ export default function HomeScreen() {
           </Animated.View>
         </Pressable>
       </Modal>
+      <Modal
+        visible={regionOpen}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setRegionOpen(false)}
+      >
+        <Pressable 
+          style={styles.modalOverlay}
+          onPress={() => setRegionOpen(false)}
+        >
+          <Animated.View 
+            style={[
+              styles.modalContent, 
+              { transform: [{ translateY: slideAnim }] }
+            ]}
+          >
+            <Pressable onPress={(e) => e.stopPropagation()}>
+              <TouchableOpacity 
+                style={styles.modalHeader}
+                activeOpacity={1}
+                onPress={() => setRegionOpen(false)}
+              >
+                <Text style={styles.modalTitle}>Region Options</Text>
+                <TouchableOpacity onPress={() => setRegionOpen(false)}>
+                  <Text style={styles.closeButton}>✕</Text>
+                </TouchableOpacity>
+              </TouchableOpacity>
+              <ScrollView style={styles.modalBody}>
+                {[...regions].sort((a, b) => {
+                  if (a === region) return -1;
+                  if (b === region) return 1;
+                  return a.localeCompare(b);
+                })?.map((regionName, idx) => {
+                  const isSelected = region === regionName;
+                  return (
+                    <TouchableOpacity 
+                      key={`${regionName}_${idx}`}
+                      style={[
+                        styles.regionButton,
+                        isSelected && styles.regionButtonSelected
+                      ]}
+                      onPress={() => {
+                        setRegion(regionName);
+                        setRegionOpen(false);
+                      }}
+                    >
+                      <Text style={[
+                        styles.regionButtonText,
+                        isSelected && styles.regionButtonTextSelected
+                      ]}>
+                        {regionName}
+                      </Text>
+                      {isSelected && (
+                        <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </Pressable>
+          </Animated.View>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -263,11 +356,14 @@ const createStyles = (colors) => StyleSheet.create({
     backgroundColor: colors.groupedBackground,
   },
   header: {
+    flexDirection: 'row',
     backgroundColor: colors.background,
     paddingHorizontal: 20,
     paddingBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: colors.separator,
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   headerTitle: {
     fontSize: 34,
@@ -303,7 +399,15 @@ const createStyles = (colors) => StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-  button: {
+  headerButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 10,
+    width: '25%',
+    borderRadius: 12
+  },
+  filterButton: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#DDDDDD',
@@ -410,5 +514,30 @@ const createStyles = (colors) => StyleSheet.create({
   modalText: {
     fontSize: 16,
     color: colors.text,
+  },
+  regionButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colors.groupedBackground,
+    borderWidth: 1,
+    borderColor: colors.separator,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+  },
+  regionButtonSelected: {
+    backgroundColor: colors.card,
+    borderColor: colors.primary,
+    borderWidth: 2,
+  },
+  regionButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: colors.text,
+  },
+  regionButtonTextSelected: {
+    fontWeight: '700',
+    color: colors.primary,
   },
 });

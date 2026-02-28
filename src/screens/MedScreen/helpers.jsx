@@ -16,7 +16,13 @@ import {
   Kidneys,
   Skeleton
 } from 'healthicons-react-native/outline';
-import { systems } from '../globalHelpers';
+import {
+  defaultMedicationRouteBadgeColors,
+  medicationRouteBadgeColors,
+  medicationRouteLabels,
+  medicationRouteOrder,
+  systems
+} from '../globalHelpers';
 
 export const getSystemIcon = (medicationSystem) => {
   if (!medicationSystem) return null;
@@ -38,12 +44,77 @@ export const getSystemIcon = (medicationSystem) => {
   return <IconComponent height={20} width={20} color='grey' />;
 }
 
+export const mapPurposeByRoute = (contentMap) => {
+  if (!contentMap || typeof contentMap !== 'object') return {};
+
+  const groupedMap = {};
+
+  Object.entries(contentMap).forEach(([route, entries]) => {
+    if (!Array.isArray(entries) || !entries.length) return;
+
+    entries.forEach((entry) => {
+      const purpose = entry?.purpose?.trim() || 'General';
+
+      if (!groupedMap[purpose]) {
+        groupedMap[purpose] = {};
+      }
+
+      if (!groupedMap[purpose][route]) {
+        groupedMap[purpose][route] = [];
+      }
+
+      groupedMap[purpose][route].push(entry);
+    });
+  });
+
+  const sortedGroupedMap = {};
+
+  Object.entries(groupedMap).forEach(([purpose, routeMap]) => {
+    const orderedRoutes = {};
+
+    medicationRouteOrder.forEach((routeKey) => {
+      if (routeMap[routeKey]) {
+        orderedRoutes[routeKey] = routeMap[routeKey];
+      }
+    });
+
+    Object.keys(routeMap).forEach((routeKey) => {
+      if (!orderedRoutes[routeKey]) {
+        orderedRoutes[routeKey] = routeMap[routeKey];
+      }
+    });
+
+    sortedGroupedMap[purpose] = orderedRoutes;
+  });
+
+  return sortedGroupedMap;
+};
+
+const capitalizeFirstLetter = (value) => {
+  if (typeof value !== 'string' || !value.length) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+const getRouteLabel = (route) => {
+  if (!route) return '';
+  return medicationRouteLabels[route] || route.toUpperCase();
+};
+
+const getRouteBadgeColors = (route) => {
+  return medicationRouteBadgeColors[route] || defaultMedicationRouteBadgeColors;
+};
+
 export const TabCard = ({
   cardKey,
   tabs,
   content
 }) => {
   const [selectedTab, setSelectedTab] = useState(tabs[0]?.id)
+  const [selectedRoutesByPurpose, setSelectedRoutesByPurpose] = useState({});
+  const selectedTabContent = content?.[selectedTab];
+  const groupedContent = mapPurposeByRoute(selectedTabContent);
+  const groupedEntries = Object.entries(groupedContent);
+  const totalMax = selectedTabContent?.totalMax;
   const { colors } = useTheme();
   const styles = createStyles(colors);
   return (
@@ -104,6 +175,148 @@ export const TabCard = ({
       </View>
       <CardHeaderBorder />
       <View style={styles.contentCard}>
+        {totalMax ? (
+          <View style={[
+            styles.tabTotalMaxContainer,
+            totalMax.includes('Not Recommended')
+              ? styles.tabNotRecommendedBorder
+              : styles.tabTotalMaxBorder
+          ]}>
+            <Ionicons
+              name={totalMax.includes('Not Recommended') 
+                ? 'alert-circle' 
+                : 'warning'
+              }
+              size={18}
+              color={totalMax.includes('Not Recommended') 
+                ? 'rgb(203 88 61)' 
+                : 'rgb(226 161 59)'
+              }
+            />
+            {totalMax.includes('Not Recommended') ? (
+              <Text
+                style={styles.tabNotRecommendedText}
+              >
+                {`Not recommended in the ${selectedTab} setting!`}
+              </Text>
+            ) : (
+              <Text
+                style={[styles.tabTotalMaxText]}
+              >
+                {`Total max: ${totalMax}`}
+              </Text>
+            )}
+            <Ionicons
+              name={totalMax.includes('Not Recommended') 
+                ? 'alert-circle' 
+                : 'warning'
+              }
+              size={18}
+              color={totalMax.includes('Not Recommended') 
+                ? 'rgb(203 88 61)' 
+                : 'rgb(226 161 59)'
+              }
+            />
+          </View>
+        ) : null}
+        {!totalMax && !groupedEntries.length ? (
+          <Text style={styles.itemContentText}>No dosing information available.</Text>
+        ) : (
+          groupedEntries.map(([purpose, routes], purposeIdx) => {
+            const isLastPurpose = purposeIdx === groupedEntries.length - 1;
+            const routeKeys = Object.keys(routes);
+            const selectedRoute = selectedRoutesByPurpose[purpose] || routeKeys[0];
+            const selectedRouteEntries = routes?.[selectedRoute] || [];
+            return (
+              <View
+                key={purpose}
+                style={[
+                  styles.tabPurposeContainer,
+                  isLastPurpose ? styles.tabPurposeContainerLast : null
+                ]}
+              >
+                {purpose !== 'General' ? (
+                  <Text style={styles.tabPurposeText}>{purpose}</Text>
+                ) : null }
+                <View style={styles.tabRouteSelectorRow}>
+                  {routeKeys.map((route) => {
+                    const badgeColors = getRouteBadgeColors(route);
+                    const isSelected = route === selectedRoute;
+                    return (
+                      <TouchableOpacity
+                        key={`${purpose}-${route}`}
+                        onPress={() => {
+                          return setSelectedRoutesByPurpose((prev) => ({
+                            ...prev,
+                            [purpose]: route
+                          }))
+                        }}
+                        accessibilityRole='button'
+                        accessibilityState={{ selected: isSelected }}
+                        style={[
+                          styles.tabRouteBadge,
+                          {
+                            backgroundColor: badgeColors.bgColor,
+                            borderColor: badgeColors.borderColor,
+                            opacity: isSelected ? 1 : 0.55
+                          },
+                          isSelected ? styles.tabRouteBadgeSelected : null
+                        ]}
+                      >
+                        <View style={styles.tabRouteBadgeContent}>
+                          {isSelected ? (
+                            <Ionicons
+                              name='checkmark-circle'
+                              size={12}
+                              color={badgeColors.textColor}
+                            />
+                          ) : null}
+                          <Text style={[
+                            styles.tabRouteBadgeText,
+                            { color: badgeColors.textColor },
+                            isSelected ? styles.tabRouteBadgeTextSelected : null
+                          ]}>
+                            {getRouteLabel(route)}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+                <View style={styles.tabRouteBodyContainer}>
+                  {selectedRouteEntries.map((entry, idx) => {
+                    const isLastEntry = idx === selectedRouteEntries.length - 1;
+                    return (
+                      <View
+                        key={`${purpose}-${selectedRoute}-${idx}`}
+                        style={[
+                          styles.tabEntryContainer,
+                          isLastEntry ? styles.tabEntryContainerLast : null
+                        ]}
+                      >
+                        {entry?.amt ? (
+                          <Text style={styles.tabAmountText}>{entry.amt}</Text>
+                        ) : null}
+                        {entry?.initMax ? (
+                          <Text style={styles.tabMetaText}>{`Initial max: ${entry.initMax}`}</Text>
+                        ) : null}
+                        {entry?.adt ? (
+                          <Text style={styles.tabDetailText}>{capitalizeFirstLetter(entry.adt)}</Text>
+                        ) : null}
+                        {entry?.repeat ? (
+                          <Text style={styles.tabMetaText}>{`Repeat: ${entry.repeat}`}</Text>
+                        ) : null}
+                        {entry?.repeatMax ? (
+                          <Text style={styles.tabMetaText}>{`Repeat max: ${entry.repeatMax}`}</Text>
+                        ) : null}
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
+            );
+          })
+        )}
       </View>
     </View>    
   );
@@ -342,8 +555,122 @@ const createStyles = (colors) => StyleSheet.create({
     color: colors.text,
   },
   contentCard: {
-    paddingTop: 5,
-    paddingBottom: 10,
-    paddingHorizontal: 20
+    paddingTop: 4,
+    paddingBottom: 8,
+    paddingHorizontal: 14
+  },
+  tabPurposeContainer: {
+    paddingTop: 6,
+    paddingBottom: 8,
+    gap: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.separator,
+  },
+  tabPurposeContainerLast: {
+    borderBottomWidth: 0,
+    paddingBottom: 0,
+  },
+  tabPurposeText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  tabRouteSelectorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 2,
+  },
+  tabRouteBadge: {
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 5,
+    borderWidth: 1,
+  },
+  tabRouteBadgeContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+  },
+  tabRouteBadgeSelected: {
+    borderWidth: 2,
+    shadowColor: colors.text,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.12,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  tabRouteBadgeText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  tabRouteBadgeTextSelected: {
+    fontWeight: '700',
+  },
+  tabEntryContainer: {
+    gap: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.separator,
+  },
+  tabEntryContainerLast: {
+    borderBottomWidth: 0,
+  },
+  tabRouteBodyContainer: {
+    borderWidth: 1,
+    borderColor: colors.separator,
+    borderRadius: 8,
+    backgroundColor: colors.groupedBackground,
+  },
+  tabAmountText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  tabDetailText: {
+    fontSize: 13,
+    fontWeight: '400',
+    color: colors.text,
+    lineHeight: 17,
+  },
+  tabMetaText: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: colors.text,
+    lineHeight: 15,
+  },
+  tabTotalMaxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    marginTop: 4,
+    marginBottom: '.75',
+  },
+  tabNotRecommendedBorder: {
+    backgroundColor: 'rgb(251 240 233)',
+    borderWidth: 1,
+    borderColor: 'rgb(203 88 61)',
+    borderRadius: 6,
+  },
+  tabTotalMaxBorder: {
+    backgroundColor: '#FFF9E6',
+    borderWidth: 1,
+    borderColor: '#E6D48C',
+    borderRadius: 6,
+  },
+  tabNotRecommendedText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: 'rgb(203 88 61)',
+  },
+  tabTotalMaxText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#7A6A1E',
   },
 });
