@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 export const useHomeScreen = () => {
+  const [region, setRegion] = useState('NREMT');
   const [medications, setMedications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,10 +13,14 @@ export const useHomeScreen = () => {
         setError(null);
 
         const response = await fetch(`${process.env.API_URL}/medication/base`, {
+          method: 'POST',
           headers: {
             'Authorization': `Bearer ${process.env.API_KEY}`,
             'Content-Type': 'application/json'
-          }
+          },
+          body: JSON.stringify({
+            region
+          })
         });
         
         if (!response.ok) {
@@ -33,11 +38,13 @@ export const useHomeScreen = () => {
     }
     
     fetchData();
-  }, []);
+  }, [region]);
 
   return {
     medications,
     loading,
-    error
+    error,
+    region,
+    setRegion
   };
 };

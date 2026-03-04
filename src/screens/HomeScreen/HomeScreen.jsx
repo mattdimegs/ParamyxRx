@@ -78,7 +78,9 @@ export default function HomeScreen() {
   const {
     medications,
     loading,
-    error
+    error,
+    region,
+    setRegion
   } = data;
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
@@ -87,7 +89,6 @@ export default function HomeScreen() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [region, setRegion] = useState('NREMT');
   const [regionOpen, setRegionOpen] = useState(false);
   const slideAnim = useRef(new Animated.Value(1000)).current;
   const [originalSortedData, setOriginalSortedData] = useState([]);
@@ -204,7 +205,7 @@ export default function HomeScreen() {
           <Text style={styles.resetText}>Reset All Filters & Search</Text>
         </TouchableOpacity>
       </View>
-      {loading || (completeData?.length === 0 && search === '') && !error ? (
+      {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
