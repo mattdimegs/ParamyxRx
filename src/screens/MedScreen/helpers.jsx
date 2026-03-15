@@ -18,13 +18,15 @@ import {
 } from 'healthicons-react-native/outline';
 import {
   defaultMedicationRouteBadgeColors,
-  medicationRouteBadgeColors,
+  getDefaultMedicationRouteBadgeColors,
+  getMedicationRouteBadgeColors,
   medicationRouteLabels,
   medicationRouteOrder,
   systems
 } from '../globalHelpers';
 
-export const getSystemIcon = (medicationSystem) => {
+export const SystemIcon = ({ system: medicationSystem }) => {
+  const { colors } = useTheme();
   if (!medicationSystem) return null;
   
   const system = systems.find(sys => sys.value === medicationSystem);
@@ -41,7 +43,7 @@ export const getSystemIcon = (medicationSystem) => {
   }[system.icon];
   if (!IconComponent) return null;
   
-  return <IconComponent height={20} width={20} color='grey' />;
+  return <IconComponent height={20} width={20} color={colors.secondaryText} />;
 }
 
 export const mapPurposeByRoute = (contentMap) => {
@@ -100,8 +102,8 @@ const getRouteLabel = (route) => {
   return medicationRouteLabels[route] || route.toUpperCase();
 };
 
-const getRouteBadgeColors = (route) => {
-  return medicationRouteBadgeColors[route] || defaultMedicationRouteBadgeColors;
+const getRouteBadgeColors = (route, activeTheme) => {
+  return getMedicationRouteBadgeColors(activeTheme)[route] || getDefaultMedicationRouteBadgeColors(activeTheme);
 };
 
 export const TabCard = ({
@@ -115,8 +117,8 @@ export const TabCard = ({
   const groupedContent = mapPurposeByRoute(selectedTabContent);
   const groupedEntries = Object.entries(groupedContent);
   const totalMax = selectedTabContent?.totalMax;
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+  const { colors, activeTheme } = useTheme();
+  const styles = createStyles(colors, activeTheme);
   return (
     <View style={styles.universalCard} key={cardKey}>
       <View 
@@ -124,7 +126,7 @@ export const TabCard = ({
         style={[
           styles.cardHeader,
           { 
-            backgroundColor: 'rgb(244 246 242)'
+            backgroundColor: colors.secondaryBackground
           }
         ]}
       >
@@ -151,7 +153,7 @@ export const TabCard = ({
                   style={{
                     alignItems: 'center',
                     borderWidth: 1,
-                    borderColor: '#A0A0A0',
+                    borderColor: colors.systemGray3,
                     width: 125,
                     paddingVertical: 1,
                     borderTopLeftRadius: isFirst ? 8 : 0,
@@ -159,7 +161,7 @@ export const TabCard = ({
                     borderTopRightRadius: isLast ? 8 : 0,
                     borderBottomRightRadius: isLast ? 8 : 0,
                     borderLeftWidth: isFirst ? 1 : 0,
-                    backgroundColor: selectedTab === i?.id ? 'rgb(177 182 182)' : ''
+                    backgroundColor: selectedTab === i?.id ? colors.systemGray3 : 'transparent'
                   }}
                   onPress={() => { return setSelectedTab(i?.id) }}
                 >
@@ -189,8 +191,8 @@ export const TabCard = ({
               }
               size={18}
               color={totalMax.includes('Not Recommended') 
-                ? 'rgb(203 88 61)' 
-                : 'rgb(226 161 59)'
+                ? (activeTheme === 'dark' ? '#FF7B52' : 'rgb(203 88 61)')
+                : (activeTheme === 'dark' ? '#C5A820' : 'rgb(226 161 59)')
               }
             />
             {totalMax.includes('Not Recommended') ? (
@@ -213,8 +215,8 @@ export const TabCard = ({
               }
               size={18}
               color={totalMax.includes('Not Recommended') 
-                ? 'rgb(203 88 61)' 
-                : 'rgb(226 161 59)'
+                ? (activeTheme === 'dark' ? '#FF7B52' : 'rgb(203 88 61)')
+                : (activeTheme === 'dark' ? '#C5A820' : 'rgb(226 161 59)')
               }
             />
           </View>
@@ -240,7 +242,7 @@ export const TabCard = ({
                 ) : null }
                 <View style={styles.tabRouteSelectorRow}>
                   {routeKeys.map((route) => {
-                    const badgeColors = getRouteBadgeColors(route);
+                    const badgeColors = getRouteBadgeColors(route, activeTheme);
                     const isSelected = route === selectedRoute;
                     return (
                       <TouchableOpacity
@@ -326,8 +328,8 @@ export const TimeCard = ({
   content,
   type
 }) => {
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+  const { colors, activeTheme } = useTheme();
+  const styles = createStyles(colors, activeTheme);
   return (
     <View style={[styles.timeCard, { width: '49%' }]}>
       {content?.unit === 'immediate' ? (
@@ -390,8 +392,9 @@ export const CardHeader = ({
 };
 
 export const CardHeaderBorder = () => {
+  const { colors } = useTheme();
   return (
-    <View style={{ borderWidth: '.6', borderColor: 'rgb(232 233 232)' }} />
+    <View style={{ borderWidth: 0.6, borderColor: colors.separator }} />
   );
 };
 
@@ -405,8 +408,8 @@ export const ContentCard = ({
   defaultOpen = false
 }) => {
   const [cardOpen, setCardOpen] = useState(defaultOpen);
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+  const { colors, activeTheme } = useTheme();
+  const styles = createStyles(colors, activeTheme);
   return (
     <View style={styles.universalCard} key={cardKey}>
       <CardHeader
@@ -424,7 +427,7 @@ export const ContentCard = ({
         <View>
           <CardHeaderBorder />
           <View style={styles.contentCard}>
-            <Text>{content}</Text>
+            <Text style={styles.contentCardText}>{content}</Text>
           </View>
         </View>
        ) : null}
@@ -443,8 +446,8 @@ export const ItemCard = ({
   bulletIcon = null
 }) => {
   const [cardOpen, setCardOpen] = useState(defaultOpen);
-  const { colors } = useTheme();
-  const styles = createStyles(colors);
+  const { colors, activeTheme } = useTheme();
+  const styles = createStyles(colors, activeTheme);
   return (
     <View style={styles.universalCard} key={cardKey}>
       <CardHeader
@@ -465,7 +468,7 @@ export const ItemCard = ({
             {contentMap?.map((i, idx) => {
               return (
                 <View style={styles.itemCardHeaderContent} key={idx}>
-                  <Ionicons name={bulletIcon || cardIcon} size={20} color={bulletIcon ? 'grey' : cardColor}/>
+                  <Ionicons name={bulletIcon || cardIcon} size={20} color={bulletIcon ? colors.secondaryText : cardColor}/>
                   <Text style={styles.itemContentText}>{i}</Text>
                 </View>
               );
@@ -477,7 +480,7 @@ export const ItemCard = ({
   );
 };
 
-const createStyles = (colors) => StyleSheet.create({
+const createStyles = (colors, activeTheme) => StyleSheet.create({
   timeCard: {
     backgroundColor: colors.card,
     borderRadius: 8,
@@ -558,6 +561,12 @@ const createStyles = (colors) => StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 8,
     paddingHorizontal: 14
+  },
+  contentCardText: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: colors.text,
+    lineHeight: 20,
   },
   tabPurposeContainer: {
     paddingTop: 6,
@@ -652,25 +661,25 @@ const createStyles = (colors) => StyleSheet.create({
     marginBottom: '.75',
   },
   tabNotRecommendedBorder: {
-    backgroundColor: 'rgb(251 240 233)',
+    backgroundColor: activeTheme === 'dark' ? '#2D1408' : 'rgb(251 240 233)',
     borderWidth: 1,
     borderColor: 'rgb(203 88 61)',
     borderRadius: 6,
   },
   tabTotalMaxBorder: {
-    backgroundColor: '#FFF9E6',
+    backgroundColor: activeTheme === 'dark' ? '#1F1A00' : '#FFF9E6',
     borderWidth: 1,
-    borderColor: '#E6D48C',
+    borderColor: activeTheme === 'dark' ? '#C5A820' : '#E6D48C',
     borderRadius: 6,
   },
   tabNotRecommendedText: {
     fontSize: 13,
     fontWeight: '700',
-    color: 'rgb(203 88 61)',
+    color: activeTheme === 'dark' ? '#FF7B52' : 'rgb(203 88 61)',
   },
   tabTotalMaxText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#7A6A1E',
+    color: activeTheme === 'dark' ? '#C5A820' : '#7A6A1E',
   },
 });

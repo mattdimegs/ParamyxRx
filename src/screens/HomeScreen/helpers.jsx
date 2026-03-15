@@ -13,7 +13,7 @@ import {
   Kidneys,
   Skeleton
 } from 'healthicons-react-native';
-import { medicationRouteBadgeColors, medicationRouteLabels, systems } from '../globalHelpers';
+import { getMedicationRouteBadgeColors, medicationRouteLabels, systems } from '../globalHelpers';
 
 const medicationRoutes = [
   {
@@ -30,7 +30,6 @@ const medicationRoutes = [
       }
       return null;
     },
-    ...medicationRouteBadgeColors.iv
   },
   {
     key: 'io',
@@ -46,7 +45,6 @@ const medicationRoutes = [
       }
       return null;
     },
-    ...medicationRouteBadgeColors.io
   },
   {
     key: 'im',
@@ -62,7 +60,6 @@ const medicationRoutes = [
       }
       return null;
     },
-    ...medicationRouteBadgeColors.im
   },
   {
     key: 'in',
@@ -78,7 +75,6 @@ const medicationRoutes = [
       }
       return null;
     },
-    ...medicationRouteBadgeColors.in
   },
   {
     key: 'po',
@@ -94,7 +90,6 @@ const medicationRoutes = [
       }
       return null;
     },
-    ...medicationRouteBadgeColors.po
   },
   {
     key: 'sl',
@@ -110,7 +105,6 @@ const medicationRoutes = [
       }
       return null;
     },
-    ...medicationRouteBadgeColors.sl
   },
   {
     key: 'pr',
@@ -126,7 +120,6 @@ const medicationRoutes = [
       }
       return null;
     },
-    ...medicationRouteBadgeColors.pr
   },
   {
     key: 'neb',
@@ -142,7 +135,6 @@ const medicationRoutes = [
       }
       return null;
     },
-    ...medicationRouteBadgeColors.neb
   },
   {
     key: 'et',
@@ -158,7 +150,6 @@ const medicationRoutes = [
       }
       return null;
     },
-    ...medicationRouteBadgeColors.et
   },
   {
     key: 'sga',
@@ -174,7 +165,6 @@ const medicationRoutes = [
       }
       return null;
     },
-    ...medicationRouteBadgeColors.sga
   }
 ];
 
@@ -190,8 +180,9 @@ const Badge = ({ label, bgColor, borderColor, textColor }) => (
 );
 
 export const HomeScreenHelpers = {
-  getRoutes: (drug) => {
+  getRoutes: (drug, activeTheme) => {
     const activeRoutes = medicationRoutes.filter(route => route.check(drug));
+    const badgeColorMap = getMedicationRouteBadgeColors(activeTheme);
     
     if (activeRoutes.length === 0) return null;
     
@@ -219,9 +210,9 @@ export const HomeScreenHelpers = {
             <Badge
               key={route.key}
               label={label}
-              bgColor={route.bgColor}
-              borderColor={route.borderColor}
-              textColor={route.textColor}
+              bgColor={badgeColorMap[route.key]?.bgColor}
+              borderColor={badgeColorMap[route.key]?.borderColor}
+              textColor={badgeColorMap[route.key]?.textColor}
             />
           )
         })}

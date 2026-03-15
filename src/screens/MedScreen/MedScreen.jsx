@@ -14,7 +14,7 @@ import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { useMedScreen } from '../../hooks/useMedScreen';
 import {
   ContentCard,
-  getSystemIcon,
+  SystemIcon,
   ItemCard,
   TabCard,
   TimeCard
@@ -25,9 +25,16 @@ export default function MedScreen({ route }) {
 
   const navigation = useNavigation();
   const { medication, loading, error } = useMedScreen(drugId);
-  const { colors } = useTheme();
+  const { colors, activeTheme } = useTheme();
   const insets = useSafeAreaInsets();
   const styles = createStyles(colors);
+  const cardHeaderColors = {
+    action: activeTheme === 'dark' ? 'rgb(10 25 40)' : 'rgb(229 241 246)',
+    indications: activeTheme === 'dark' ? 'rgb(12 28 12)' : 'rgb(230, 244, 227)',
+    contraindications: activeTheme === 'dark' ? 'rgb(45 15 8)' : 'rgb(251 240 233)',
+    adverse: activeTheme === 'dark' ? 'rgb(20 12 45)' : 'rgb(243 240 255)',
+    precautions: activeTheme === 'dark' ? 'rgb(38 28 8)' : 'rgb(250 244 232)',
+  };
 
   return (
     <View style={styles.container}>
@@ -67,7 +74,7 @@ export default function MedScreen({ route }) {
                   );
                 })}
                 <View style={styles.badge}>
-                  {getSystemIcon(medication?.system)}
+                  <SystemIcon system={medication?.system} />
                   <Text style={styles.badgeText}>{`${medication?.system} System`}</Text>
                 </View>
               </View>
@@ -93,21 +100,21 @@ export default function MedScreen({ route }) {
             cardIcon='information-circle-outline'
             cardTitle='Medication Action'
             content={medication?.action}
-            headerColor='rgb(229 241 246)'
+            headerColor={cardHeaderColors.action}
           />
           <ItemCard cardKey='indications'
             cardColor='rgb(101, 157, 85)'
             cardIcon='checkmark-circle'
             cardTitle='Indications'
             contentMap={medication?.indications}
-            headerColor='rgb(230, 244, 227)'
+            headerColor={cardHeaderColors.indications}
           />
           <ItemCard cardKey='contraindications'
             cardColor='rgb(203 88 61)'
             cardIcon='close-circle'
             cardTitle='Contraindications'
             contentMap={medication?.contraindications}
-            headerColor='rgb(251 240 233)'
+            headerColor={cardHeaderColors.contraindications}
             defaultOpen
           />
           <ItemCard cardKey='adverse'
@@ -115,7 +122,7 @@ export default function MedScreen({ route }) {
             cardIcon='nuclear'
             cardTitle='Adverse Effects'
             contentMap={medication?.adverse}
-            headerColor='rgb(243 240 255)'
+            headerColor={cardHeaderColors.adverse}
             bulletIcon='caret-forward-outline'
           />
           <ContentCard cardKey='precautions'
@@ -123,7 +130,7 @@ export default function MedScreen({ route }) {
             cardIcon='warning'
             cardTitle='Precautionary Statement'
             content={medication?.precautions}
-            headerColor='rgb(250 244 232)'
+            headerColor={cardHeaderColors.precautions}
           />
           {medication?.tip ? (
             <ContentCard cardKey='tips'
@@ -131,7 +138,7 @@ export default function MedScreen({ route }) {
               cardIcon='information-circle-outline'
               cardTitle='Field Tips'
               content={medication?.tip}
-              headerColor='rgb(229 241 246)'
+              headerColor={cardHeaderColors.action}
             />
           ) : null}
         {/* Content */}  
@@ -191,13 +198,14 @@ const createStyles = (colors) => StyleSheet.create({
     gap: 4,
     paddingVertical: 4,
     borderRadius: 4,
-    backgroundColor: '#D5D5D5',
+    backgroundColor: colors.systemGray5,
     marginRight: 2,
     borderWidth: 1,
-    borderColor: '#A0A0A0'
+    borderColor: colors.systemGray3
   },
   badgeText: {
     fontSize: 12,
-    fontWeight: '400'
+    fontWeight: '400',
+    color: colors.text,
   }
 });

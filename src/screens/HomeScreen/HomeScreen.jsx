@@ -82,7 +82,7 @@ export default function HomeScreen() {
     region,
     setRegion
   } = data;
-  const { colors } = useTheme();
+  const { colors, activeTheme } = useTheme();
   const insets = useSafeAreaInsets();
   const styles = createStyles(colors);
 
@@ -187,13 +187,19 @@ export default function HomeScreen() {
       <View style={[styles.header, { paddingTop: insets.top }]}>
         <Text style={styles.headerTitle}>Medications</Text>
         <TouchableOpacity style={styles.headerButton} onPress={() => setRegionOpen(true)}>
-          <Text>Region</Text>
+          <Text style={styles.buttonText}>Region</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.actionsContainer}>
-        <TextInput style={styles.searchBar} onChangeText={setSearch} value={search} placeholder='Search' />
+        <TextInput
+          style={styles.searchBar}
+          onChangeText={setSearch}
+          value={search}
+          placeholder='Search'
+          placeholderTextColor={colors.placeholderText}
+        />
         <TouchableOpacity style={styles.filterButton} onPress={() => setFilterOpen(true)}>
-          <Text>Filters</Text>
+          <Text style={styles.buttonText}>Filters</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.reset}>
@@ -229,11 +235,11 @@ export default function HomeScreen() {
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <View style={{ flex: 1, marginRight: 12 }}>
                       <Text style={styles.cardTitle}>{i?.generic}</Text>
-                      {HomeScreenHelpers.getRoutes(i)}
+                      {HomeScreenHelpers.getRoutes(i, activeTheme)}
                     </View>
                     {HomeScreenHelpers.getSystem(i)}
                     <View style={{ width: 12 }} />
-                    <Ionicons name="chevron-forward-outline" />
+                    <Ionicons name="chevron-forward-outline" color={colors.secondaryText} />
                   </View>
                 </TouchableOpacity>
               )
@@ -274,7 +280,7 @@ export default function HomeScreen() {
                     <View key={`${i?.id}_${idx}`}>
                       <Text style={styles.modalText}>{i?.name}</Text>
                       {i?.multiSelect ? (
-                        <Text>Placeholder for now</Text>
+                        <Text style={styles.modalText}>Placeholder for now</Text>
                       ) : null}
                     </View>
                   )
@@ -386,6 +392,7 @@ const createStyles = (colors) => StyleSheet.create({
   },
   searchBar: {
     flex: 1,
+    color: colors.text,
     backgroundColor: colors.card,
     borderRadius: 12,
     padding: 15,
@@ -403,7 +410,7 @@ const createStyles = (colors) => StyleSheet.create({
   headerButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#DDDDDD',
+    backgroundColor: colors.systemGray5,
     padding: 10,
     width: '25%',
     borderRadius: 12
@@ -411,10 +418,14 @@ const createStyles = (colors) => StyleSheet.create({
   filterButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#DDDDDD',
+    backgroundColor: colors.systemGray5,
     padding: 10,
     width: '25%',
     borderRadius: 12
+  },
+  buttonText: {
+    color: colors.text,
+    fontWeight: '500',
   },
   reset: {
     alignItems: 'flex-end',
@@ -424,7 +435,7 @@ const createStyles = (colors) => StyleSheet.create({
   resetText: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: 'blue'
+    color: colors.tint
   },
   card: {
     backgroundColor: colors.card,
